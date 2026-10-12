@@ -1,0 +1,45 @@
+{
+  "id": "palindrome-check",
+  "title": "回文判定",
+  "statement": "英小文字からなる文字列 S が与えられる。S を前から読んでも後ろから読んでも同じ文字列（回文）なら Yes、そうでなければ No を出力せよ。",
+  "constraints": [
+    "1 ≤ |S| ≤ 10⁵",
+    "S は英小文字のみ"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "Yes または No を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "level",
+      "output": "Yes"
+    },
+    {
+      "input": "abca",
+      "output": "No"
+    },
+    {
+      "input": "z",
+      "output": "Yes"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\n\n// 反転した文字列と比べるだけでよい\nconst reversed = s.split(\"\").reverse().join(\"\");\nconsole.log(s === reversed ? \"Yes\" : \"No\");\n",
+    "explanation": [
+      {
+        "lead": "反転して比べる。",
+        "body": "split で 1 文字ずつに分け、reverse して join で戻せば、反転した文字列が作れる。"
+      },
+      {
+        "lead": "両端から内側へ比べる方法もある。",
+        "body": "左右 2 つの位置を動かして比べれば、追加のメモリを使わずに判定できる。"
+      },
+      {
+        "lead": "計算量は O(|S|)。",
+        "body": "文字列の長さに比例した時間で終わる。"
+      }
+    ]
+  }
+}

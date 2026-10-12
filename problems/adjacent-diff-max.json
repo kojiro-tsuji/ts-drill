@@ -1,0 +1,46 @@
+{
+  "id": "adjacent-diff-max",
+  "title": "隣り合う差の最大値",
+  "statement": "長さ N の整数列 A1, A2, …, AN が与えられる。隣り合う 2 つの要素の差の絶対値 |A(i+1) − A(i)| のうち、最大のものを出力せよ。",
+  "constraints": [
+    "2 ≤ N ≤ 10⁵",
+    "−10⁹ ≤ Ai ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nA1 A2 … AN",
+  "outputFormat": "最大値を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5\n3 1 4 1 5",
+      "output": "4"
+    },
+    {
+      "input": "3\n10 10 10",
+      "output": "0"
+    },
+    {
+      "input": "2\n-5 7",
+      "output": "12"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\n// 1 行目の N は使わない\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\n// 隣り合う差の絶対値を配列にする\nconst diffs = a.slice(1).map((v, i) => Math.abs(v - a[i]));\n\n// 最大値を 1 回の走査で求める\nconst answer = diffs.reduce((max, d) => Math.max(max, d), 0);\nconsole.log(answer);\n",
+    "explanation": [
+      {
+        "lead": "隣り合う差を配列にする。",
+        "body": "slice(1) と元の配列を i でずらして対応させ、絶対値を取る。"
+      },
+      {
+        "lead": "最大値は reduce で求める。",
+        "body": "Math.max(...diffs) は要素数が非常に多いと引数の上限に当たることがあるため、N が大きい問題では reduce が安全。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "全体を 1 回なめるだけなので、N = 10⁵ でも間に合う。"
+      }
+    ]
+  }
+}
