@@ -1,0 +1,48 @@
+{
+  "id": "frog-jump",
+  "title": "カエルのジャンプ",
+  "difficulty": 4,
+  "statement": "N 個の足場が一列に並び、i 番目の足場の高さは Hi である。カエルは足場 1 にいて、足場 i から足場 i+1, i+2, …, i+K のどれかへジャンプできる。足場 i から足場 j へ跳ぶと、コスト |Hi − Hj| がかかる。足場 N にたどり着くまでのコストの合計の最小値を出力せよ。",
+  "constraints": [
+    "2 ≤ N ≤ 10⁵",
+    "1 ≤ K ≤ 100",
+    "1 ≤ Hi ≤ 10⁴",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N K\nH1 H2 … HN",
+  "outputFormat": "コストの最小値を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5 3\n10 30 40 50 20",
+      "output": "30"
+    },
+    {
+      "input": "3 1\n10 20 10",
+      "output": "20"
+    },
+    {
+      "input": "2 100\n10 10",
+      "output": "0"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, k] = first.split(\" \").map(Number);\nconst h = second.split(\" \").map(Number);\n\n// dp[i] = 足場 i（0 始まり）にたどり着くまでの最小コスト\nconst dp = new Array(n).fill(Infinity);\ndp[0] = 0;\nfor (let i = 1; i < n; i++) {\n  // 直前の最大 K 個の足場から跳んでくる\n  for (let j = Math.max(0, i - k); j < i; j++) {\n    dp[i] = Math.min(dp[i], dp[j] + Math.abs(h[i] - h[j]));\n  }\n}\nconsole.log(dp[n - 1]);\n",
+    "explanation": [
+      {
+        "lead": "「どこから来たか」で場合分けする。",
+        "body": "足場 i へは、i−1 から i−K のどれかから跳んでくる。それぞれ「そこまでの最小コスト + 最後の 1 跳び」を計算し、最小を取る。"
+      },
+      {
+        "lead": "前から順に埋める。",
+        "body": "dp[i] を求めるときには、それより前の dp はすべて確定している。"
+      },
+      {
+        "lead": "計算量は O(NK)。",
+        "body": "10⁵ × 100 = 10⁷ 回程度で間に合う。"
+      }
+    ]
+  }
+}

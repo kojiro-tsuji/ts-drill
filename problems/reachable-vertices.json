@@ -1,0 +1,48 @@
+{
+  "id": "reachable-vertices",
+  "title": "たどり着ける頂点",
+  "difficulty": 3,
+  "statement": "頂点に 1 から N の番号が付いた無向グラフがある。辺は M 本で、i 番目の辺は頂点 Ui と Vi を結ぶ。頂点 1 から辺をたどってたどり着ける頂点の個数（頂点 1 自身を含む）を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 2 × 10⁵",
+    "0 ≤ M ≤ 2 × 10⁵",
+    "1 ≤ Ui, Vi ≤ N",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N M\nU1 V1\n…\nUM VM",
+  "outputFormat": "頂点の個数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5 3\n1 2\n2 3\n4 5",
+      "output": "3"
+    },
+    {
+      "input": "3 0",
+      "output": "1"
+    },
+    {
+      "input": "4 4\n1 2\n2 3\n3 1\n3 4",
+      "output": "4"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, m] = lines[0].split(\" \").map(Number);\n\n// 隣接リスト\nconst graph: number[][] = Array.from({ length: n + 1 }, () => []);\nfor (let i = 1; i <= m; i++) {\n  const [u, v] = lines[i].split(\" \").map(Number);\n  graph[u].push(v);\n  graph[v].push(u);\n}\n\nconst visited = new Uint8Array(n + 1);\nconst queue = [1];\nvisited[1] = 1;\nfor (let head = 0; head < queue.length; head++) {\n  for (const next of graph[queue[head]]) {\n    if (visited[next]) continue;\n    visited[next] = 1;\n    queue.push(next);\n  }\n}\nconsole.log(queue.length);\n",
+    "explanation": [
+      {
+        "lead": "隣接リストでグラフを表す。",
+        "body": "頂点ごとに、つながっている頂点の配列を持つ。無向グラフなので両方向に追加する。"
+      },
+      {
+        "lead": "BFS で到達できる頂点を集める。",
+        "body": "キューに入った頂点がそのまま到達できた頂点なので、最後のキューの長さが答えになる。"
+      },
+      {
+        "lead": "計算量は O(N + M)。",
+        "body": "各頂点と各辺を 1 回ずつ見るだけ。"
+      }
+    ]
+  }
+}

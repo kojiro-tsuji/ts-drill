@@ -1,0 +1,47 @@
+{
+  "id": "min-max-range",
+  "title": "最大と最小の差",
+  "difficulty": 1,
+  "statement": "N 個の整数 A1, A2, …, AN が与えられる。最大値と最小値の差を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁵",
+    "−10⁹ ≤ Ai ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nA1 A2 … AN",
+  "outputFormat": "差を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5\n3 8 1 9 4",
+      "output": "8"
+    },
+    {
+      "input": "1\n42",
+      "output": "0"
+    },
+    {
+      "input": "3\n-10 0 10",
+      "output": "20"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\n// 1 回の走査で最大と最小を同時に求める\nlet max = a[0];\nlet min = a[0];\nfor (const x of a) {\n  if (x > max) max = x;\n  if (x < min) min = x;\n}\nconsole.log(max - min);\n",
+    "explanation": [
+      {
+        "lead": "最初の要素で初期化する。",
+        "body": "max と min を a[0] から始めれば、負の数だけの入力でも正しく動く。"
+      },
+      {
+        "lead": "Math.max(...a) は避ける。",
+        "body": "要素数が 10⁵ 程度あると、展開した引数が多すぎてエラーになることがある。ループなら安全。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "1 回の走査で両方求まる。"
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "ceil-division",
+  "title": "切り上げの割り算",
+  "difficulty": 1,
+  "statement": "正の整数 A, B が与えられる。A ÷ B の小数点以下を切り上げた値を出力せよ。",
+  "constraints": [
+    "1 ≤ A, B ≤ 10¹⁸",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "A B",
+  "outputFormat": "切り上げた商を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "7 2",
+      "output": "4"
+    },
+    {
+      "input": "6 3",
+      "output": "2"
+    },
+    {
+      "input": "1000000000000000000 3",
+      "output": "333333333333333334"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\n// 10¹⁸ は Number では正確に表せないので BigInt で読む\nconst [a, b] = readFileSync(0, \"utf8\").trim().split(\" \").map(BigInt);\n\n// (A + B - 1) / B で切り上げになる（BigInt の割り算は切り捨て）\nconsole.log(((a + b - 1n) / b).toString());\n",
+    "explanation": [
+      {
+        "lead": "BigInt で読む。",
+        "body": "A, B は最大 10¹⁸ で、Number では下の桁が丸められる。map(BigInt) で読めば正確に扱える。"
+      },
+      {
+        "lead": "(A + B − 1) ÷ B で切り上げる。",
+        "body": "BigInt の割り算は切り捨て。B − 1 を足してから割ると、割り切れないときだけ 1 増える。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "足し算と割り算を 1 回ずつするだけ。"
+      }
+    ]
+  }
+}

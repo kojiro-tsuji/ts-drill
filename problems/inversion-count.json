@@ -1,0 +1,47 @@
+{
+  "id": "inversion-count",
+  "title": "転倒数",
+  "difficulty": 5,
+  "statement": "長さ N の整数列 A が与えられる。i < j かつ Ai > Aj となる添字の組 (i, j) の個数（転倒数）を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 2 × 10⁵",
+    "1 ≤ Ai ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nA1 A2 … AN",
+  "outputFormat": "転倒数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5\n3 1 4 1 5",
+      "output": "3"
+    },
+    {
+      "input": "3\n1 2 3",
+      "output": "0"
+    },
+    {
+      "input": "4\n4 3 2 1",
+      "output": "6"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\n// 値を 1 始まりの順位に置き換える（座標圧縮）\nconst sorted = [...new Set(a)].sort((x, y) => x - y);\nconst rank = new Map<number, number>();\nsorted.forEach((v, i) => rank.set(v, i + 1));\n\n// BIT（Fenwick 木）: 順位ごとの出現回数を管理し、前からの和を O(log N) で求める\nconst m = sorted.length;\nconst bit = new Int32Array(m + 1);\nconst add = (i: number) => {\n  for (; i <= m; i += i & -i) bit[i]++;\n};\nconst sum = (i: number) => {\n  let s = 0;\n  for (; i > 0; i -= i & -i) s += bit[i];\n  return s;\n};\n\nlet inversions = 0;\na.forEach((x, j) => {\n  const r = rank.get(x)!;\n  // これまでの j 個のうち、x より大きいもの = j - (x 以下の個数)\n  inversions += j - sum(r);\n  add(r);\n});\nconsole.log(inversions);\n",
+    "explanation": [
+      {
+        "lead": "右端を固定して、左にある大きい値を数える。",
+        "body": "Aj について、それより前にあって Aj より大きい要素の数を足していけば転倒数になる。"
+      },
+      {
+        "lead": "BIT で「x 以下の個数」を素早く数える。",
+        "body": "値が最大 10⁹ と大きいので、まず順位に置き換える（座標圧縮）。順位ごとの出現回数を BIT に入れれば、前からの和が O(log N) で求まる。"
+      },
+      {
+        "lead": "計算量は O(N log N)。",
+        "body": "答えは最大で約 2 × 10¹⁰ になるが、Number で正確に扱える。"
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "count-vowels",
+  "title": "母音の数",
+  "difficulty": 2,
+  "statement": "英小文字からなる文字列 S が与えられる。S に含まれる母音（a, i, u, e, o）の個数を出力せよ。",
+  "constraints": [
+    "1 ≤ |S| ≤ 10⁵",
+    "S は英小文字のみ"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "母音の個数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "typescript",
+      "output": "2"
+    },
+    {
+      "input": "aiueo",
+      "output": "5"
+    },
+    {
+      "input": "rhythm",
+      "output": "0"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\nconst vowels = new Set([\"a\", \"i\", \"u\", \"e\", \"o\"]);\n\nlet count = 0;\nfor (const c of s) {\n  if (vowels.has(c)) count++;\n}\nconsole.log(count);\n",
+    "explanation": [
+      {
+        "lead": "母音を Set にまとめる。",
+        "body": "Set の has は要素の有無を素早く調べられる。条件を 5 つ並べるより読みやすい。"
+      },
+      {
+        "lead": "1 文字ずつ判定する。",
+        "body": "for...of で文字を取り出し、母音なら数える。"
+      },
+      {
+        "lead": "計算量は O(|S|)。",
+        "body": "各文字を 1 回ずつ見るだけ。"
+      }
+    ]
+  }
+}

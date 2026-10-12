@@ -1,0 +1,46 @@
+{
+  "id": "leap-year",
+  "title": "うるう年",
+  "difficulty": 1,
+  "statement": "西暦 Y 年が与えられる。Y がうるう年なら Yes、そうでなければ No を出力せよ。うるう年とは、4 で割り切れる年のうち、100 で割り切れる年を除き、ただし 400 で割り切れる年は含めたものである。",
+  "constraints": [
+    "1 ≤ Y ≤ 9999",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "Y",
+  "outputFormat": "Yes または No を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "2024",
+      "output": "Yes"
+    },
+    {
+      "input": "1900",
+      "output": "No"
+    },
+    {
+      "input": "2000",
+      "output": "Yes"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst y = Number(readFileSync(0, \"utf8\").trim());\n\nconst leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;\nconsole.log(leap ? \"Yes\" : \"No\");\n",
+    "explanation": [
+      {
+        "lead": "条件をそのまま式にする。",
+        "body": "「4 の倍数かつ 100 の倍数でない」または「400 の倍数」がうるう年。"
+      },
+      {
+        "lead": "例外の例外に注意する。",
+        "body": "1900 年は 100 の倍数なのでうるう年ではないが、2000 年は 400 の倍数なのでうるう年。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "余りを数回調べるだけ。"
+      }
+    ]
+  }
+}

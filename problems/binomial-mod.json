@@ -1,0 +1,47 @@
+{
+  "id": "binomial-mod",
+  "title": "二項係数のクエリ",
+  "difficulty": 4,
+  "statement": "Q 個のクエリが与えられる。各クエリでは整数 n, r が与えられるので、二項係数 nCr（n 個から r 個を選ぶ方法の数）を 10⁹ + 7 で割った余りを出力せよ。",
+  "constraints": [
+    "1 ≤ Q ≤ 10⁵",
+    "0 ≤ r ≤ n ≤ 10⁶",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "Q\nn1 r1\n…\nnQ rQ",
+  "outputFormat": "Q 行出力。i 行目に i 番目のクエリの答え",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3\n5 2\n10 0\n10 10",
+      "output": "10\n1\n1"
+    },
+    {
+      "input": "1\n1000000 500000",
+      "output": "996692777"
+    },
+    {
+      "input": "2\n4 1\n6 3",
+      "output": "4\n20"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst q = Number(lines[0]);\nconst MOD = 1_000_000_007n;\nconst MAX = 1_000_000;\n\n// 積が 2⁵³ を超えるので、掛け算は BigInt で行い、結果は Number に戻して持つ\nconst mul = (a: number, b: number): number => Number((BigInt(a) * BigInt(b)) % MOD);\nfunction pow(base: number, exp: number): number {\n  let result = 1;\n  while (exp > 0) {\n    if (exp & 1) result = mul(result, base);\n    base = mul(base, base);\n    exp >>= 1;\n  }\n  return result;\n}\n\n// fact[i] = i!、inv[i] = (i!) の逆元\nconst fact = new Array(MAX + 1);\nfact[0] = 1;\nfor (let i = 1; i <= MAX; i++) fact[i] = mul(fact[i - 1], i);\nconst inv = new Array(MAX + 1);\ninv[MAX] = pow(fact[MAX], Number(MOD) - 2); // フェルマーの小定理\nfor (let i = MAX; i > 0; i--) inv[i - 1] = mul(inv[i], i);\n\nconst out: number[] = [];\nfor (let i = 1; i <= q; i++) {\n  const [n, r] = lines[i].split(\" \").map(Number);\n  out.push(mul(mul(fact[n], inv[r]), inv[n - r]));\n}\nconsole.log(out.join(\"\\n\"));\n",
+    "explanation": [
+      {
+        "lead": "nCr = n! ÷ (r! (n−r)!) を余りの世界で計算する。",
+        "body": "余りの世界では割り算ができないので、「逆元」を掛ける。10⁹ + 7 は素数なので、a の逆元は a^(p−2) で求まる（フェルマーの小定理）。"
+      },
+      {
+        "lead": "階乗と逆元を前計算する。",
+        "body": "最大値の階乗の逆元を 1 回だけ累乗で求め、inv[i−1] = inv[i] × i で下に向かって作る。各クエリは掛け算 2 回で答えられる。"
+      },
+      {
+        "lead": "掛け算のあふれに注意する。",
+        "body": "10⁹ 程度の数どうしの積は 10¹⁸ になり、Number では誤差が出る。掛け算だけ BigInt で行う。計算量は O(MAX + Q)。"
+      }
+    ]
+  }
+}

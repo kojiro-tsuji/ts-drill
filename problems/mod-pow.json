@@ -1,0 +1,49 @@
+{
+  "id": "mod-pow",
+  "title": "累乗の余り",
+  "difficulty": 3,
+  "statement": "整数 A, B, M が与えられる。A の B 乗を M で割った余りを出力せよ。",
+  "constraints": [
+    "0 ≤ A ≤ 10¹⁸",
+    "0 ≤ B ≤ 10¹⁸",
+    "1 ≤ M ≤ 10¹⁸",
+    "入力はすべて整数",
+    "0 の 0 乗は 1 とする"
+  ],
+  "inputFormat": "A B M",
+  "outputFormat": "余りを 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "2 10 1000",
+      "output": "24"
+    },
+    {
+      "input": "3 0 7",
+      "output": "1"
+    },
+    {
+      "input": "123456789 1000000000000000000 998244353",
+      "output": "574599152"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [a, b, m] = readFileSync(0, \"utf8\").trim().split(\" \").map(BigInt);\n\n// 繰り返し二乗法: B を 2 進数で見て、ビットが立っている桁の A^(2^k) を掛ける\nfunction modPow(base: bigint, exp: bigint, mod: bigint): bigint {\n  let result = 1n % mod;\n  base %= mod;\n  while (exp > 0n) {\n    if (exp & 1n) result = (result * base) % mod;\n    base = (base * base) % mod;\n    exp >>= 1n;\n  }\n  return result;\n}\nconsole.log(modPow(a, b, m).toString());\n",
+    "explanation": [
+      {
+        "lead": "繰り返し二乗法で計算する。",
+        "body": "A を B 回掛けると B = 10¹⁸ では終わらない。A, A², A⁴, A⁸, … を 2 乗で作り、B の 2 進数で 1 の桁だけ掛ければ約 60 回で済む。"
+      },
+      {
+        "lead": "掛けるたびに余りを取る。",
+        "body": "途中の値を M 未満に保てば、数が大きくなりすぎない。M は 10¹⁸ まであるので、積が 2⁵³ を超えないよう BigInt を使う。"
+      },
+      {
+        "lead": "M = 1 に注意する。",
+        "body": "答えは常に 0。結果の初期値を 1 % M にしておくと、この場合も正しく 0 になる。計算量は O(log B)。"
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "fizzbuzz",
+  "title": "FizzBuzz",
+  "difficulty": 1,
+  "statement": "整数 N が与えられる。i = 1, 2, …, N について 1 行ずつ出力せよ。i が 3 と 5 の両方で割り切れるなら FizzBuzz、3 だけで割り切れるなら Fizz、5 だけで割り切れるなら Buzz、どれでもなければ i をそのまま出力する。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁵",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N",
+  "outputFormat": "N 行出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5",
+      "output": "1\n2\nFizz\n4\nBuzz"
+    },
+    {
+      "input": "15",
+      "output": "1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz"
+    },
+    {
+      "input": "1",
+      "output": "1"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst n = Number(readFileSync(0, \"utf8\").trim());\n\nconst out: string[] = [];\nfor (let i = 1; i <= n; i++) {\n  // 15 の倍数を先に判定する\n  if (i % 15 === 0) out.push(\"FizzBuzz\");\n  else if (i % 3 === 0) out.push(\"Fizz\");\n  else if (i % 5 === 0) out.push(\"Buzz\");\n  else out.push(String(i));\n}\nconsole.log(out.join(\"\\n\"));\n",
+    "explanation": [
+      {
+        "lead": "15 の倍数を最初に調べる。",
+        "body": "3 の倍数の判定を先にすると、15 の倍数も Fizz になってしまう。条件の順番が大事。"
+      },
+      {
+        "lead": "出力はまとめて 1 回で出す。",
+        "body": "console.log を N 回呼ぶより、配列に溜めて join(\"\\n\") で出すほうが速い。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "1 から N まで 1 回ずつ見るだけ。"
+      }
+    ]
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "bipartite-check",
+  "title": "二部グラフ判定",
+  "difficulty": 4,
+  "statement": "頂点に 1 から N の番号が付いた無向グラフがある。辺は M 本で、i 番目の辺は頂点 Ui と Vi を結ぶ。各頂点を白か黒に塗り、どの辺も両端の色が異なるようにできるなら Yes、できないなら No を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 2 × 10⁵",
+    "0 ≤ M ≤ 2 × 10⁵",
+    "1 ≤ Ui, Vi ≤ N",
+    "Ui ≠ Vi",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N M\nU1 V1\n…\nUM VM",
+  "outputFormat": "Yes または No を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "4 4\n1 2\n2 3\n3 4\n4 1",
+      "output": "Yes"
+    },
+    {
+      "input": "3 3\n1 2\n2 3\n3 1",
+      "output": "No"
+    },
+    {
+      "input": "3 0",
+      "output": "Yes"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, m] = lines[0].split(\" \").map(Number);\nconst graph: number[][] = Array.from({ length: n + 1 }, () => []);\nfor (let i = 1; i <= m; i++) {\n  const [u, v] = lines[i].split(\" \").map(Number);\n  graph[u].push(v);\n  graph[v].push(u);\n}\n\n// color: 0 = 未塗装、1 = 白、-1 = 黒\nconst color = new Int8Array(n + 1);\nlet ok = true;\nfor (let s = 1; s <= n && ok; s++) {\n  if (color[s] !== 0) continue;\n  // 連結成分ごとに BFS で交互に塗る\n  color[s] = 1;\n  const queue = [s];\n  for (let head = 0; head < queue.length && ok; head++) {\n    const v = queue[head];\n    for (const next of graph[v]) {\n      if (color[next] === 0) {\n        color[next] = -color[v];\n        queue.push(next);\n      } else if (color[next] === color[v]) {\n        ok = false; // 隣り合う 2 頂点が同じ色になった\n        break;\n      }\n    }\n  }\n}\nconsole.log(ok ? \"Yes\" : \"No\");\n",
+    "explanation": [
+      {
+        "lead": "隣の頂点を反対の色で塗っていく。",
+        "body": "ある頂点の色を決めると、つながっている頂点の色はすべて自動的に決まる。BFS で交互に塗り、矛盾が出たら No。"
+      },
+      {
+        "lead": "連結成分ごとに始める。",
+        "body": "グラフが複数の部分に分かれていることがあるので、まだ塗っていない頂点からそれぞれ探索を始める。"
+      },
+      {
+        "lead": "計算量は O(N + M)。",
+        "body": "奇数の長さの閉路があると二部グラフにならない。三角形がその例。"
+      }
+    ]
+  }
+}

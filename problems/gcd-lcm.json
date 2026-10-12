@@ -1,0 +1,46 @@
+{
+  "id": "gcd-lcm",
+  "title": "最大公約数と最小公倍数",
+  "difficulty": 2,
+  "statement": "正の整数 A, B が与えられる。A と B の最大公約数と最小公倍数を、この順に空白区切りで出力せよ。",
+  "constraints": [
+    "1 ≤ A, B ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "A B",
+  "outputFormat": "最大公約数と最小公倍数を空白区切りで 1 行に出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "12 18",
+      "output": "6 36"
+    },
+    {
+      "input": "7 13",
+      "output": "1 91"
+    },
+    {
+      "input": "1000000000 999999999",
+      "output": "1 999999999000000000"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [a, b] = readFileSync(0, \"utf8\").trim().split(\" \").map(BigInt);\n\n// ユークリッドの互除法\nfunction gcd(x: bigint, y: bigint): bigint {\n  while (y !== 0n) {\n    [x, y] = [y, x % y];\n  }\n  return x;\n}\nconst g = gcd(a, b);\n// 最小公倍数は最大 10¹⁸ 程度になるので BigInt で計算する\nconsole.log(g + \" \" + (a / g) * b);\n",
+    "explanation": [
+      {
+        "lead": "最大公約数はユークリッドの互除法で求める。",
+        "body": "gcd(x, y) = gcd(y, x mod y) を、余りが 0 になるまで繰り返す。"
+      },
+      {
+        "lead": "最小公倍数は A × B ÷ 最大公約数。",
+        "body": "先に A を最大公約数で割ってから B を掛けると、途中の値が小さく済む。"
+      },
+      {
+        "lead": "BigInt を使う。",
+        "body": "最小公倍数は最大で約 10¹⁸ になり、Number では正確に表せない。計算量は O(log min(A, B))。"
+      }
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "maze-shortest-path",
+  "title": "迷路の最短経路",
+  "difficulty": 3,
+  "statement": "H 行 W 列の迷路が与えられる。# は壁、. は通路である。左上のマス (1, 1) から右下のマス (H, W) まで、上下左右に隣り合う通路を通って移動するとき、最小の移動回数を出力せよ。たどり着けなければ −1 を出力せよ。",
+  "constraints": [
+    "1 ≤ H, W ≤ 1000",
+    "各マスは # または .",
+    "左上と右下のマスは ."
+  ],
+  "inputFormat": "H W\nS1\n…\nSH",
+  "outputFormat": "最小の移動回数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 4\n....\n.##.\n....",
+      "output": "5"
+    },
+    {
+      "input": "2 2\n.#\n#.",
+      "output": "-1"
+    },
+    {
+      "input": "1 1\n.",
+      "output": "0"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [h, w] = lines[0].split(\" \").map(Number);\nconst grid = lines.slice(1, h + 1);\n\n// dist[y * w + x] = スタートからの最短距離（未訪問は -1）\nconst dist = new Int32Array(h * w).fill(-1);\nconst queue = new Int32Array(h * w);\nlet head = 0;\nlet tail = 0;\ndist[0] = 0;\nqueue[tail++] = 0;\n\nconst dy = [-1, 1, 0, 0];\nconst dx = [0, 0, -1, 1];\nwhile (head < tail) {\n  const cur = queue[head++];\n  const y = Math.floor(cur / w);\n  const x = cur % w;\n  for (let d = 0; d < 4; d++) {\n    const ny = y + dy[d];\n    const nx = x + dx[d];\n    if (ny < 0 || ny >= h || nx < 0 || nx >= w) continue;\n    if (grid[ny][nx] === \"#\" || dist[ny * w + nx] !== -1) continue;\n    dist[ny * w + nx] = dist[cur] + 1;\n    queue[tail++] = ny * w + nx;\n  }\n}\nconsole.log(dist[h * w - 1]);\n",
+    "explanation": [
+      {
+        "lead": "幅優先探索（BFS）で距離を求める。",
+        "body": "スタートから近い順にマスを訪れるので、初めて訪れたときの距離が最短距離になる。"
+      },
+      {
+        "lead": "キューは配列と先頭の添字で作る。",
+        "body": "Array の shift は遅いので、固定長の配列に head と tail の 2 つの位置を持たせる。マスは y × W + x の 1 つの数で表す。"
+      },
+      {
+        "lead": "計算量は O(HW)。",
+        "body": "各マスは高々 1 回だけキューに入る。ゴールに届かなければ距離は −1 のまま残る。"
+      }
+    ]
+  }
+}

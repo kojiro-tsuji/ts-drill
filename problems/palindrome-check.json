@@ -1,6 +1,7 @@
 {
   "id": "palindrome-check",
   "title": "回文判定",
+  "difficulty": 1,
   "statement": "英小文字からなる文字列 S が与えられる。S を前から読んでも後ろから読んでも同じ文字列（回文）なら Yes、そうでなければ No を出力せよ。",
   "constraints": [
     "1 ≤ |S| ≤ 10⁵",

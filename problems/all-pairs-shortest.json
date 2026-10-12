@@ -1,0 +1,51 @@
+{
+  "id": "all-pairs-shortest",
+  "title": "全点対最短路",
+  "difficulty": 5,
+  "statement": "頂点に 1 から N の番号が付いた有向グラフがある。辺は M 本で、i 番目の辺は頂点 Ui から Vi へ向かい、長さは Wi である。Q 個のクエリが与えられ、各クエリでは頂点 s から t への最短距離を出力せよ。たどり着けなければ −1 を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 300",
+    "0 ≤ M ≤ N(N − 1)",
+    "1 ≤ Ui, Vi ≤ N",
+    "Ui ≠ Vi",
+    "1 ≤ Wi ≤ 10⁹",
+    "1 ≤ Q ≤ 10⁵",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N M\nU1 V1 W1\n…\nUM VM WM\nQ\ns1 t1\n…\nsQ tQ",
+  "outputFormat": "Q 行出力。i 行目に i 番目のクエリの答え",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "4 5\n1 2 3\n2 3 4\n1 3 10\n3 4 1\n4 1 2\n3\n1 3\n3 2\n2 2",
+      "output": "7\n6\n0"
+    },
+    {
+      "input": "2 0\n1\n1 2",
+      "output": "-1"
+    },
+    {
+      "input": "3 3\n1 2 1000000000\n2 3 1000000000\n1 3 1999999999\n1\n1 3",
+      "output": "1999999999"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, m] = lines[0].split(\" \").map(Number);\n\n// dist[i * n + j] = i から j への最短距離（0 始まり）\nconst dist = new Float64Array(n * n).fill(Infinity);\nfor (let i = 0; i < n; i++) dist[i * n + i] = 0;\nfor (let k = 1; k <= m; k++) {\n  const [u, v, w] = lines[k].split(\" \").map(Number);\n  const idx = (u - 1) * n + (v - 1);\n  dist[idx] = Math.min(dist[idx], w);\n}\n\n// ワーシャル–フロイド法: 経由してよい頂点を 1 つずつ増やす\nfor (let k = 0; k < n; k++) {\n  for (let i = 0; i < n; i++) {\n    const ik = dist[i * n + k];\n    if (ik === Infinity) continue;\n    for (let j = 0; j < n; j++) {\n      const via = ik + dist[k * n + j];\n      if (via < dist[i * n + j]) dist[i * n + j] = via;\n    }\n  }\n}\n\nconst q = Number(lines[m + 1]);\nconst out: number[] = [];\nfor (let i = 0; i < q; i++) {\n  const [s, t] = lines[m + 2 + i].split(\" \").map(Number);\n  const d = dist[(s - 1) * n + (t - 1)];\n  out.push(d === Infinity ? -1 : d);\n}\nconsole.log(out.join(\"\\n\"));\n",
+    "explanation": [
+      {
+        "lead": "ワーシャル–フロイド法で全点対の距離を求める。",
+        "body": "「頂点 1〜k だけを経由してよい」ときの最短距離を、k を 1 つずつ増やしながら更新する。i → k → j が今より短ければ置き換える。"
+      },
+      {
+        "lead": "ループの順番が大事。",
+        "body": "経由する頂点 k を一番外側のループにする。内側にすると正しく求まらない。"
+      },
+      {
+        "lead": "計算量は O(N³ + Q)。",
+        "body": "N = 300 で約 2700 万回。前計算しておけば、各クエリは表を引くだけで答えられる。"
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "id": "strongly-connected-count",
+  "title": "強連結成分の個数",
+  "difficulty": 5,
+  "statement": "頂点に 1 から N の番号が付いた有向グラフがある。辺は M 本で、i 番目の辺は頂点 Ui から Vi へ向かう。互いに行き来できる頂点どうしをまとめたグループ（強連結成分）の個数を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 2 × 10⁵",
+    "0 ≤ M ≤ 2 × 10⁵",
+    "1 ≤ Ui, Vi ≤ N",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N M\nU1 V1\n…\nUM VM",
+  "outputFormat": "強連結成分の個数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5 6\n1 2\n2 3\n3 1\n3 4\n4 5\n5 4",
+      "output": "2"
+    },
+    {
+      "input": "3 0",
+      "output": "3"
+    },
+    {
+      "input": "4 4\n1 2\n2 3\n3 4\n4 1",
+      "output": "1"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, m] = lines[0].split(\" \").map(Number);\nconst graph: number[][] = Array.from({ length: n + 1 }, () => []);\nconst reversed: number[][] = Array.from({ length: n + 1 }, () => []);\nfor (let i = 1; i <= m; i++) {\n  const [u, v] = lines[i].split(\" \").map(Number);\n  graph[u].push(v);\n  reversed[v].push(u);\n}\n\n// 1 回目: 元のグラフで DFS し、抜けた順（帰りがけ順）に頂点を記録する\nconst visited = new Uint8Array(n + 1);\nconst order: number[] = [];\nconst edgeIndex = new Int32Array(n + 1);\nfor (let s = 1; s <= n; s++) {\n  if (visited[s]) continue;\n  visited[s] = 1;\n  const stack = [s];\n  while (stack.length > 0) {\n    const v = stack[stack.length - 1];\n    if (edgeIndex[v] < graph[v].length) {\n      const next = graph[v][edgeIndex[v]++];\n      if (!visited[next]) {\n        visited[next] = 1;\n        stack.push(next);\n      }\n    } else {\n      order.push(v);\n      stack.pop();\n    }\n  }\n}\n\n// 2 回目: 帰りがけ順の遅い頂点から、逆向きのグラフで到達できる範囲が 1 つの成分\nconst component = new Int32Array(n + 1).fill(-1);\nlet count = 0;\nfor (let i = order.length - 1; i >= 0; i--) {\n  const s = order[i];\n  if (component[s] !== -1) continue;\n  component[s] = count;\n  const stack = [s];\n  while (stack.length > 0) {\n    const v = stack.pop()!;\n    for (const next of reversed[v]) {\n      if (component[next] !== -1) continue;\n      component[next] = count;\n      stack.push(next);\n    }\n  }\n  count++;\n}\nconsole.log(count);\n",
+    "explanation": [
+      {
+        "lead": "DFS を 2 回行う（コサラジュの方法）。",
+        "body": "1 回目は元のグラフで帰りがけ順を記録する。2 回目は辺を逆向きにしたグラフで、帰りがけ順の遅い頂点から探索し、届いた範囲を 1 つの成分とする。"
+      },
+      {
+        "lead": "再帰を使わずに DFS する。",
+        "body": "頂点数が 2 × 10⁵ あると、再帰では呼び出しが深くなりすぎることがある。各頂点で次に見る辺の位置を持てば、スタックで帰りがけ順を再現できる。"
+      },
+      {
+        "lead": "計算量は O(N + M)。",
+        "body": "各頂点と各辺を、2 回の探索でそれぞれ 1 回ずつ見る。"
+      }
+    ]
+  }
+}

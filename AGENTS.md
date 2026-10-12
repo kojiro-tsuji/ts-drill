@@ -7,3 +7,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+## tsdrill
+
+- 問題を追加・修正するときは `docs/problem-authoring.md` に従う。サンプルの出力は `npm run verify -- --write <id>` で模範解答から作る。
+- コード実行エンジンは `src/lib/runner/`。`execute.ts` はブラウザの Worker と検証スクリプトの両方で使うので、DOM にも Node にも依存させない。

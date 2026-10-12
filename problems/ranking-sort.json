@@ -1,0 +1,47 @@
+{
+  "id": "ranking-sort",
+  "title": "成績順の並べ替え",
+  "difficulty": 3,
+  "statement": "N 人の名前と点数が与えられる。点数の高い順に並べ、点数が同じ人どうしは名前の辞書順（小さい順）に並べて、名前を 1 行ずつ出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁵",
+    "名前は英小文字からなる長さ 1 以上 10 以下の文字列で、すべて異なる",
+    "0 ≤ 点数 ≤ 100"
+  ],
+  "inputFormat": "N\nName1 P1\n…\nNameN PN",
+  "outputFormat": "N 行に名前を出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "4\nbob 80\nalice 90\ncarol 80\ndave 70",
+      "output": "alice\nbob\ncarol\ndave"
+    },
+    {
+      "input": "1\nzed 0",
+      "output": "zed"
+    },
+    {
+      "input": "3\nc 50\nb 50\na 50",
+      "output": "a\nb\nc"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(lines[0]);\nconst people = lines.slice(1, n + 1).map((l) => {\n  const [name, score] = l.split(\" \");\n  return { name, score: Number(score) };\n});\n\npeople.sort((p, q) => {\n  if (p.score !== q.score) return q.score - p.score; // 点数は降順\n  return p.name < q.name ? -1 : 1; // 名前は昇順\n});\nconsole.log(people.map((p) => p.name).join(\"\\n\"));\n",
+    "explanation": [
+      {
+        "lead": "比較関数に複数の条件を書く。",
+        "body": "まず点数を比べ、違えばそれで決める。同じときだけ名前を比べる。"
+      },
+      {
+        "lead": "降順は引き算の向きを逆にする。",
+        "body": "q.score − p.score とすれば、点数の高い順になる。"
+      },
+      {
+        "lead": "文字列は < で辞書順に比べられる。",
+        "body": "名前はすべて異なるので、等しい場合は考えなくてよい。計算量は O(N log N)。"
+      }
+    ]
+  }
+}

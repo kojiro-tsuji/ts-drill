@@ -1,0 +1,46 @@
+{
+  "id": "digit-sum",
+  "title": "各桁の和",
+  "difficulty": 1,
+  "statement": "正の整数 N が与えられる。N の各桁の数字の和を出力せよ。N は非常に大きいことがあるので、文字列として扱うとよい。",
+  "constraints": [
+    "1 ≤ N < 10¹⁰⁰⁰⁰⁰",
+    "N の先頭は 0 ではない"
+  ],
+  "inputFormat": "N",
+  "outputFormat": "各桁の和を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "123",
+      "output": "6"
+    },
+    {
+      "input": "9",
+      "output": "9"
+    },
+    {
+      "input": "1000000007",
+      "output": "8"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\n\nlet sum = 0;\nfor (const c of s) {\n  sum += Number(c);\n}\nconsole.log(sum);\n",
+    "explanation": [
+      {
+        "lead": "数値ではなく文字列のまま扱う。",
+        "body": "N は最大 10 万桁あり、Number にも BigInt にも変換する必要はない。1 文字ずつ数字として足せばよい。"
+      },
+      {
+        "lead": "1 文字を数値にする。",
+        "body": "Number(\"7\") は 7 になる。"
+      },
+      {
+        "lead": "計算量は O(桁数)。",
+        "body": "各桁を 1 回ずつ見るだけ。和は最大でも 9 × 10⁵ 程度で、Number で問題ない。"
+      }
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "bubble-sort-swaps",
+  "title": "バブルソートの交換回数",
+  "difficulty": 2,
+  "statement": "長さ N の整数列 A をバブルソートで昇順に並べ替えるとき、隣り合う 2 要素を交換する回数を出力せよ。バブルソートでは、隣り合う 2 要素が「前 > 後ろ」のときだけ交換する。",
+  "constraints": [
+    "1 ≤ N ≤ 2000",
+    "1 ≤ Ai ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nA1 A2 … AN",
+  "outputFormat": "交換回数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "4\n3 1 4 2",
+      "output": "3"
+    },
+    {
+      "input": "3\n1 2 3",
+      "output": "0"
+    },
+    {
+      "input": "5\n5 4 3 2 1",
+      "output": "10"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\nconst n = a.length;\n\n// 交換回数は「i < j かつ Ai > Aj となる組」の個数（転倒数）に等しい\nlet swaps = 0;\nfor (let i = 0; i < n; i++) {\n  for (let j = i + 1; j < n; j++) {\n    if (a[i] > a[j]) swaps++;\n  }\n}\nconsole.log(swaps);\n",
+    "explanation": [
+      {
+        "lead": "1 回の交換で、逆順の組が 1 つ減る。",
+        "body": "隣り合う「前 > 後ろ」の 2 つを入れ替えると、大小が逆の組がちょうど 1 つ解消される。"
+      },
+      {
+        "lead": "だから交換回数は転倒数。",
+        "body": "i < j かつ Ai > Aj となる組の個数を数えれば、実際に並べ替えなくても答えが出る。"
+      },
+      {
+        "lead": "計算量は O(N²)。",
+        "body": "N ≤ 2000 なら十分。N が大きい場合は BIT を使って O(N log N) で数えられる。"
+      }
+    ]
+  }
+}

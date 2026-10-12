@@ -1,0 +1,50 @@
+{
+  "id": "minimum-spanning-tree",
+  "title": "最小全域木",
+  "difficulty": 5,
+  "statement": "頂点に 1 から N の番号が付いた連結な無向グラフがある。辺は M 本で、i 番目の辺は頂点 Ui と Vi を結び、重みは Wi である。いくつかの辺を選んで、すべての頂点が連結になるようにするとき、選んだ辺の重みの合計の最小値を出力せよ。",
+  "constraints": [
+    "2 ≤ N ≤ 2 × 10⁵",
+    "N − 1 ≤ M ≤ 2 × 10⁵",
+    "1 ≤ Ui, Vi ≤ N",
+    "1 ≤ Wi ≤ 10⁹",
+    "グラフは連結",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N M\nU1 V1 W1\n…\nUM VM WM",
+  "outputFormat": "重みの合計の最小値を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "4 5\n1 2 1\n2 3 2\n3 4 3\n1 4 4\n1 3 5",
+      "output": "6"
+    },
+    {
+      "input": "2 1\n1 2 1000000000",
+      "output": "1000000000"
+    },
+    {
+      "input": "3 3\n1 2 5\n2 3 5\n1 3 5",
+      "output": "10"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, m] = lines[0].split(\" \").map(Number);\nconst edges = lines.slice(1, m + 1).map((l) => l.split(\" \").map(Number));\n\nconst parent = new Int32Array(n + 1).fill(-1);\nfunction find(v: number): number {\n  while (parent[v] >= 0) {\n    if (parent[parent[v]] >= 0) parent[v] = parent[parent[v]];\n    v = parent[v];\n  }\n  return v;\n}\n\n// クラスカル法: 軽い辺から順に、閉路ができない辺だけ採用する\nedges.sort((p, q) => p[2] - q[2]);\nlet total = 0;\nfor (const [u, v, w] of edges) {\n  let a = find(u);\n  let b = find(v);\n  if (a === b) continue; // すでに連結なので、採用すると閉路になる\n  if (parent[a] > parent[b]) [a, b] = [b, a];\n  parent[a] += parent[b];\n  parent[b] = a;\n  total += w;\n}\nconsole.log(total);\n",
+    "explanation": [
+      {
+        "lead": "軽い辺から順に採用する（クラスカル法）。",
+        "body": "辺を重みの小さい順に見て、両端がまだ別の連結成分にあるときだけ採用する。この貪欲法で最小全域木が得られる。"
+      },
+      {
+        "lead": "連結かどうかは Union-Find で判定する。",
+        "body": "採用した辺の両端を同じ集合にまとめる。両端の根が同じなら、その辺を採用すると閉路ができる。"
+      },
+      {
+        "lead": "計算量は O(M log M)。",
+        "body": "辺の並べ替えが支配的。重みの合計は最大で約 2 × 10¹⁴ で、Number で正確に扱える。"
+      }
+    ]
+  }
+}

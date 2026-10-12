@@ -1,0 +1,47 @@
+{
+  "id": "day-of-year",
+  "title": "その年の何日目",
+  "difficulty": 2,
+  "statement": "年 Y、月 M、日 D が与えられる。この日付がその年の何日目かを出力せよ（1 月 1 日が 1 日目）。うるう年は、4 で割り切れる年のうち 100 で割り切れる年を除き、400 で割り切れる年は含めたものであり、うるう年の 2 月は 29 日まである。",
+  "constraints": [
+    "1 ≤ Y ≤ 9999",
+    "Y 年 M 月 D 日は実在する日付",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "Y M D",
+  "outputFormat": "何日目かを 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "2024 3 1",
+      "output": "61"
+    },
+    {
+      "input": "2023 12 31",
+      "output": "365"
+    },
+    {
+      "input": "1900 3 1",
+      "output": "60"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [y, m, d] = readFileSync(0, \"utf8\").trim().split(\" \").map(Number);\n\nconst leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;\nconst days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];\n\n// 前の月までの日数を足し、最後にその月の日を足す\nlet total = d;\nfor (let i = 0; i < m - 1; i++) total += days[i];\nconsole.log(total);\n",
+    "explanation": [
+      {
+        "lead": "各月の日数を配列にする。",
+        "body": "2 月だけうるう年で変わるので、うるう年判定の結果で 28 か 29 を入れる。"
+      },
+      {
+        "lead": "前の月までを合計する。",
+        "body": "M − 1 か月分の日数を足し、最後に D を足せば答えになる。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "最大でも 11 か月分を足すだけ。"
+      }
+    ]
+  }
+}

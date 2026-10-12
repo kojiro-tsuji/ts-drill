@@ -1,0 +1,47 @@
+{
+  "id": "longest-word",
+  "title": "いちばん長い単語",
+  "difficulty": 2,
+  "statement": "英小文字の単語が空白区切りで N 個与えられる。最も長い単語を出力せよ。最も長い単語が複数あるときは、そのうち最初に現れたものを出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁴",
+    "各単語の長さは 1 以上 20 以下",
+    "単語は英小文字のみ"
+  ],
+  "inputFormat": "N\nW1 W2 … WN",
+  "outputFormat": "最も長い単語を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "4\nthe quick brown fox",
+      "output": "quick"
+    },
+    {
+      "input": "1\nhello",
+      "output": "hello"
+    },
+    {
+      "input": "3\nab cd ef",
+      "output": "ab"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst words = second.split(\" \");\n\nlet best = words[0];\nfor (const w of words) {\n  // 「より長い」ときだけ更新すれば、同じ長さでは最初のものが残る\n  if (w.length > best.length) best = w;\n}\nconsole.log(best);\n",
+    "explanation": [
+      {
+        "lead": "暫定の答えを持ちながら比べる。",
+        "body": "最初の単語を暫定の答えにし、より長い単語が出たら置き換える。"
+      },
+      {
+        "lead": ">= ではなく > を使う。",
+        "body": "同じ長さで置き換えないことで、最初に現れた単語が残る。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "各単語を 1 回ずつ比べるだけ。"
+      }
+    ]
+  }
+}

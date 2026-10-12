@@ -1,0 +1,46 @@
+{
+  "id": "triangle-possible",
+  "title": "三角形が作れるか",
+  "difficulty": 1,
+  "statement": "3 本の棒の長さ A, B, C が与えられる。これらを辺とする三角形が作れるなら Yes、作れないなら No を出力せよ。ただし、3 点が一直線に並ぶ場合は三角形とみなさない。",
+  "constraints": [
+    "1 ≤ A, B, C ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "A B C",
+  "outputFormat": "Yes または No を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 4 5",
+      "output": "Yes"
+    },
+    {
+      "input": "1 2 3",
+      "output": "No"
+    },
+    {
+      "input": "10 1 1",
+      "output": "No"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\n// 昇順に並べて、短い 2 本の和と最長の 1 本を比べる\nconst [a, b, c] = readFileSync(0, \"utf8\").trim().split(\" \").map(Number).sort((x, y) => x - y);\nconsole.log(a + b > c ? \"Yes\" : \"No\");\n",
+    "explanation": [
+      {
+        "lead": "最長の辺だけ調べればよい。",
+        "body": "三角形の条件は「どの 2 辺の和も残りの 1 辺より長い」。最長の辺について成り立てば、他の組み合わせは必ず成り立つ。"
+      },
+      {
+        "lead": "数値の並べ替えは比較関数を渡す。",
+        "body": "sort() だけだと文字列として並ぶので、(x, y) => x - y を渡して数値の昇順にする。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "3 つの値を並べて 1 回比べるだけ。"
+      }
+    ]
+  }
+}

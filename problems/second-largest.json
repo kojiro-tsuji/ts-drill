@@ -1,0 +1,48 @@
+{
+  "id": "second-largest",
+  "title": "2 番目に大きい値",
+  "difficulty": 2,
+  "statement": "N 個の相異なる整数 A1, A2, …, AN が与えられる。2 番目に大きい値を出力せよ。",
+  "constraints": [
+    "2 ≤ N ≤ 10⁵",
+    "−10⁹ ≤ Ai ≤ 10⁹",
+    "Ai はすべて異なる",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nA1 A2 … AN",
+  "outputFormat": "2 番目に大きい値を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5\n3 9 4 7 1",
+      "output": "7"
+    },
+    {
+      "input": "2\n-1 -2",
+      "output": "-2"
+    },
+    {
+      "input": "4\n10 40 30 20",
+      "output": "30"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\n// 1 位と 2 位を持ちながら 1 回だけ走査する\nlet first = -Infinity;\nlet runnerUp = -Infinity;\nfor (const x of a) {\n  if (x > first) {\n    runnerUp = first;\n    first = x;\n  } else if (x > runnerUp) {\n    runnerUp = x;\n  }\n}\nconsole.log(runnerUp);\n",
+    "explanation": [
+      {
+        "lead": "1 位と 2 位を同時に持つ。",
+        "body": "新しい値が 1 位を超えたら、それまでの 1 位を 2 位に下げる。1 位は超えないが 2 位を超えたら 2 位だけ更新する。"
+      },
+      {
+        "lead": "並べ替えでも解ける。",
+        "body": "降順に sort して 2 番目を取ってもよい。ただし O(N log N) になる。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "1 回の走査で求まる。"
+      }
+    ]
+  }
+}

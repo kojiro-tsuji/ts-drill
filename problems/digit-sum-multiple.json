@@ -1,0 +1,48 @@
+{
+  "id": "digit-sum-multiple",
+  "title": "桁和が D の倍数",
+  "difficulty": 5,
+  "statement": "正の整数 N と D が与えられる。1 以上 N 以下の整数のうち、各桁の数字の和が D の倍数であるものの個数を 10⁹ + 7 で割った余りを出力せよ。N は非常に大きいことがあるので、文字列として扱うこと。",
+  "constraints": [
+    "1 ≤ N < 10¹⁰⁰⁰⁰",
+    "N の先頭は 0 ではない",
+    "1 ≤ D ≤ 100",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nD",
+  "outputFormat": "個数を 10⁹ + 7 で割った余りを 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "30\n4",
+      "output": "6"
+    },
+    {
+      "input": "1000000009\n1",
+      "output": "2"
+    },
+    {
+      "input": "98765432109876543210\n58",
+      "output": "635270834"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [nStr, dStr] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst D = Number(dStr);\nconst MOD = 1_000_000_007;\n\n// free[r] = すでに N より小さいと確定した、桁和 mod D が r の数の個数\nlet free = new Array(D).fill(0);\nlet tightSum = 0; // N と同じ桁を選び続けた場合の桁和 mod D\nfor (const ch of nStr) {\n  const c = Number(ch);\n  const next = new Array(D).fill(0);\n  for (let r = 0; r < D; r++) {\n    if (free[r] === 0) continue;\n    for (let digit = 0; digit <= 9; digit++) {\n      const nr = (r + digit) % D;\n      next[nr] = (next[nr] + free[r]) % MOD;\n    }\n  }\n  // N の桁より小さい数字を選ぶと、ここで「小さい」が確定する\n  for (let digit = 0; digit < c; digit++) {\n    const nr = (tightSum + digit) % D;\n    next[nr] = (next[nr] + 1) % MOD;\n  }\n  tightSum = (tightSum + c) % D;\n  free = next;\n}\n\n// N 自身を加え、0（桁和 0 で数えられている）を除く\nconst count = free[0] + (tightSum === 0 ? 1 : 0) - 1;\nconsole.log(((count % MOD) + MOD) % MOD);\n",
+    "explanation": [
+      {
+        "lead": "上の桁から、N を超えないように数字を決める（桁 DP）。",
+        "body": "途中まで N と同じ数字を選んでいる状態と、すでに N より小さいと確定した状態を分けて持つ。確定した側は、残りの桁に 0〜9 を自由に置ける。"
+      },
+      {
+        "lead": "桁和は D で割った余りだけ持てばよい。",
+        "body": "最終的に知りたいのは D の倍数かどうかだけなので、状態は余り 0〜D−1 の D 通りで済む。"
+      },
+      {
+        "lead": "0 を除き、N 自身を加える。",
+        "body": "すべての桁に 0 を置いた数（= 0）も数えられているので 1 引く。計算量は O(桁数 × D × 10)。"
+      }
+    ]
+  }
+}

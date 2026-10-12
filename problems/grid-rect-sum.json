@@ -1,0 +1,50 @@
+{
+  "id": "grid-rect-sum",
+  "title": "長方形の和",
+  "difficulty": 3,
+  "statement": "H 行 W 列の整数のグリッドと、Q 個のクエリが与えられる。各クエリでは a, b, c, d が与えられるので、a 行目から c 行目、b 列目から d 列目までの長方形に含まれる数の和を出力せよ。",
+  "constraints": [
+    "1 ≤ H, W ≤ 500",
+    "1 ≤ Q ≤ 10⁵",
+    "0 ≤ 各数 ≤ 10⁹",
+    "1 ≤ a ≤ c ≤ H",
+    "1 ≤ b ≤ d ≤ W",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "H W\nG(1,1) … G(1,W)\n…\nG(H,1) … G(H,W)\nQ\na1 b1 c1 d1\n…\naQ bQ cQ dQ",
+  "outputFormat": "Q 行出力。i 行目に i 番目のクエリの答え",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 3\n1 2 3\n4 5 6\n7 8 9\n2\n1 1 2 2\n2 2 3 3",
+      "output": "12\n28"
+    },
+    {
+      "input": "1 1\n5\n1\n1 1 1 1",
+      "output": "5"
+    },
+    {
+      "input": "2 3\n1 1 1\n1 1 1\n1\n1 1 2 3",
+      "output": "6"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [h, w] = lines[0].split(\" \").map(Number);\n\n// s[i][j] = 左上 (1,1) から右下 (i,j) までの長方形の和\nconst s: number[][] = Array.from({ length: h + 1 }, () => new Array(w + 1).fill(0));\nfor (let i = 1; i <= h; i++) {\n  const row = lines[i].split(\" \").map(Number);\n  for (let j = 1; j <= w; j++) {\n    s[i][j] = row[j - 1] + s[i - 1][j] + s[i][j - 1] - s[i - 1][j - 1];\n  }\n}\n\nconst q = Number(lines[h + 1]);\nconst out: number[] = [];\nfor (let k = 0; k < q; k++) {\n  const [a, b, c, d] = lines[h + 2 + k].split(\" \").map(Number);\n  out.push(s[c][d] - s[a - 1][d] - s[c][b - 1] + s[a - 1][b - 1]);\n}\nconsole.log(out.join(\"\\n\"));\n",
+    "explanation": [
+      {
+        "lead": "二次元の累積和を作る。",
+        "body": "s[i][j] に左上から (i, j) までの和を入れる。上と左の値を足し、重なりを 1 回引けば順に作れる。"
+      },
+      {
+        "lead": "包除原理で長方形を切り出す。",
+        "body": "全体から上側と左側を引き、2 回引いた左上の部分を足し戻す。"
+      },
+      {
+        "lead": "計算量は O(HW + Q)。",
+        "body": "和は最大 2.5 × 10¹⁴ 程度で、Number で正確に扱える。"
+      }
+    ]
+  }
+}

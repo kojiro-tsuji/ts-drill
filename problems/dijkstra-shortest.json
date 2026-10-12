@@ -1,0 +1,49 @@
+{
+  "id": "dijkstra-shortest",
+  "title": "最短経路",
+  "difficulty": 4,
+  "statement": "頂点に 1 から N の番号が付いた有向グラフがある。辺は M 本で、i 番目の辺は頂点 Ai から頂点 Bi へ向かい、長さは Ci である。頂点 1 から各頂点 v = 1, 2, …, N への最短距離を出力せよ。たどり着けない頂点には −1 を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 2 × 10⁵",
+    "0 ≤ M ≤ 2 × 10⁵",
+    "1 ≤ Ai, Bi ≤ N",
+    "0 ≤ Ci ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N M\nA1 B1 C1\n…\nAM BM CM",
+  "outputFormat": "N 行出力。v 行目に頂点 v への最短距離",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "4 5\n1 2 4\n1 3 1\n3 2 2\n2 4 5\n3 4 10",
+      "output": "0\n3\n1\n8"
+    },
+    {
+      "input": "3 1\n2 3 1",
+      "output": "0\n-1\n-1"
+    },
+    {
+      "input": "2 2\n1 2 0\n2 1 7",
+      "output": "0\n0"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, m] = lines[0].split(\" \").map(Number);\nconst graph: [number, number][][] = Array.from({ length: n + 1 }, () => []);\nfor (let i = 1; i <= m; i++) {\n  const [a, b, c] = lines[i].split(\" \").map(Number);\n  graph[a].push([b, c]);\n}\n\n// 距離が小さい順に取り出す二分ヒープ（要素は [距離, 頂点]）\nconst heap: [number, number][] = [];\nfunction push(item: [number, number]): void {\n  heap.push(item);\n  let i = heap.length - 1;\n  while (i > 0) {\n    const p = (i - 1) >> 1;\n    if (heap[p][0] <= heap[i][0]) break;\n    [heap[p], heap[i]] = [heap[i], heap[p]];\n    i = p;\n  }\n}\nfunction pop(): [number, number] {\n  const top = heap[0];\n  const last = heap.pop()!;\n  if (heap.length > 0) {\n    heap[0] = last;\n    let i = 0;\n    for (;;) {\n      const l = 2 * i + 1;\n      const r = l + 1;\n      let min = i;\n      if (l < heap.length && heap[l][0] < heap[min][0]) min = l;\n      if (r < heap.length && heap[r][0] < heap[min][0]) min = r;\n      if (min === i) break;\n      [heap[min], heap[i]] = [heap[i], heap[min]];\n      i = min;\n    }\n  }\n  return top;\n}\n\nconst dist = new Array(n + 1).fill(Infinity);\ndist[1] = 0;\npush([0, 1]);\nwhile (heap.length > 0) {\n  const [d, v] = pop();\n  if (d > dist[v]) continue; // すでにより短い距離で確定している\n  for (const [to, cost] of graph[v]) {\n    if (d + cost < dist[to]) {\n      dist[to] = d + cost;\n      push([dist[to], to]);\n    }\n  }\n}\nconsole.log(dist.slice(1).map((d) => (d === Infinity ? -1 : d)).join(\"\\n\"));\n",
+    "explanation": [
+      {
+        "lead": "ダイクストラ法を使う。",
+        "body": "まだ確定していない頂点のうち、距離が最小のものは最短距離が確定する。そこから出る辺で、隣の頂点の距離を更新していく。"
+      },
+      {
+        "lead": "最小の頂点は優先度付きキューで取り出す。",
+        "body": "JavaScript には組み込みの優先度付きキューがないので、二分ヒープを自作する。古い情報は取り出したときに d > dist[v] で読み飛ばす。"
+      },
+      {
+        "lead": "計算量は O((N + M) log M)。",
+        "body": "距離は最大 2 × 10¹⁴ 程度で、Number で正確に扱える。辺の長さが負だとこの方法は使えない。"
+      }
+    ]
+  }
+}

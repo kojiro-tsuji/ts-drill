@@ -1,0 +1,46 @@
+{
+  "id": "reverse-string",
+  "title": "文字列の反転",
+  "difficulty": 1,
+  "statement": "英小文字からなる文字列 S が与えられる。S を後ろから読んだ文字列を出力せよ。",
+  "constraints": [
+    "1 ≤ |S| ≤ 10⁵",
+    "S は英小文字のみ"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "反転した文字列を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "abc",
+      "output": "cba"
+    },
+    {
+      "input": "z",
+      "output": "z"
+    },
+    {
+      "input": "programming",
+      "output": "gnimmargorp"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\nconsole.log(s.split(\"\").reverse().join(\"\"));\n",
+    "explanation": [
+      {
+        "lead": "配列にして反転する。",
+        "body": "文字列には reverse がないので、split(\"\") で 1 文字ずつの配列にしてから reverse する。"
+      },
+      {
+        "lead": "join で文字列に戻す。",
+        "body": "join(\"\") で区切りなしにつなげれば、反転した文字列になる。"
+      },
+      {
+        "lead": "計算量は O(|S|)。",
+        "body": "分割・反転・結合がそれぞれ長さに比例する。"
+      }
+    ]
+  }
+}

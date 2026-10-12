@@ -1,0 +1,46 @@
+{
+  "id": "anagram-check",
+  "title": "アナグラム判定",
+  "difficulty": 2,
+  "statement": "英小文字からなる文字列 S, T が与えられる。T が S の文字を並べ替えて作れるなら Yes、作れないなら No を出力せよ。",
+  "constraints": [
+    "1 ≤ |S|, |T| ≤ 10⁵",
+    "S, T は英小文字のみ"
+  ],
+  "inputFormat": "S\nT",
+  "outputFormat": "Yes または No を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "listen\nsilent",
+      "output": "Yes"
+    },
+    {
+      "input": "abc\nabd",
+      "output": "No"
+    },
+    {
+      "input": "aab\nab",
+      "output": "No"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [s, t] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 各文字の出現回数を数え、S で足して T で引く\nfunction same(x: string, y: string): boolean {\n  if (x.length !== y.length) return false;\n  const count = new Array(26).fill(0);\n  for (const c of x) count[c.charCodeAt(0) - 97]++;\n  for (const c of y) count[c.charCodeAt(0) - 97]--;\n  return count.every((v) => v === 0);\n}\nconsole.log(same(s, t) ? \"Yes\" : \"No\");\n",
+    "explanation": [
+      {
+        "lead": "文字ごとの個数が一致すればよい。",
+        "body": "並べ替えで作れるのは、各文字の出現回数がすべて同じとき。"
+      },
+      {
+        "lead": "26 要素の配列で数える。",
+        "body": "charCodeAt(0) − 97 で a〜z を 0〜25 に対応させる。S で足し、T で引いて、すべて 0 なら一致。"
+      },
+      {
+        "lead": "計算量は O(|S| + |T|)。",
+        "body": "並べ替えて比べる方法（O(N log N)）より速い。長さが違えば即 No。"
+      }
+    ]
+  }
+}

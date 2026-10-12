@@ -1,0 +1,46 @@
+{
+  "id": "to-uppercase",
+  "title": "大文字に変換",
+  "difficulty": 1,
+  "statement": "英小文字からなる文字列 S が与えられる。S のすべての文字を英大文字に変換して出力せよ。",
+  "constraints": [
+    "1 ≤ |S| ≤ 10⁵",
+    "S は英小文字のみ"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "変換した文字列を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "hello",
+      "output": "HELLO"
+    },
+    {
+      "input": "a",
+      "output": "A"
+    },
+    {
+      "input": "typescript",
+      "output": "TYPESCRIPT"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\nconsole.log(s.toUpperCase());\n",
+    "explanation": [
+      {
+        "lead": "toUpperCase を使う。",
+        "body": "文字列のメソッドで、英小文字をすべて大文字にした新しい文字列を返す。"
+      },
+      {
+        "lead": "元の文字列は変わらない。",
+        "body": "JavaScript の文字列は変更できないので、変換結果は戻り値で受け取る。"
+      },
+      {
+        "lead": "計算量は O(|S|)。",
+        "body": "各文字を 1 回変換する。"
+      }
+    ]
+  }
+}

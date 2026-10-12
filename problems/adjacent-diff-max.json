@@ -1,6 +1,7 @@
 {
   "id": "adjacent-diff-max",
   "title": "隣り合う差の最大値",
+  "difficulty": 1,
   "statement": "長さ N の整数列 A1, A2, …, AN が与えられる。隣り合う 2 つの要素の差の絶対値 |A(i+1) − A(i)| のうち、最大のものを出力せよ。",
   "constraints": [
     "2 ≤ N ≤ 10⁵",

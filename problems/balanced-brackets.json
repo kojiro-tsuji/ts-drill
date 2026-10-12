@@ -1,0 +1,46 @@
+{
+  "id": "balanced-brackets",
+  "title": "3 種類の括弧",
+  "difficulty": 3,
+  "statement": "(, ), [, ], {, } からなる文字列 S が与えられる。S が正しく対応した括弧列なら Yes、そうでなければ No を出力せよ。正しく対応した括弧列では、各閉じ括弧が、それより前にあってまだ閉じていない最も新しい開き括弧と同じ種類である。",
+  "constraints": [
+    "1 ≤ |S| ≤ 2 × 10⁵",
+    "S は 6 種類の括弧のみ"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "Yes または No を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "{[()()]}",
+      "output": "Yes"
+    },
+    {
+      "input": "([)]",
+      "output": "No"
+    },
+    {
+      "input": "((",
+      "output": "No"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\nconst pair: Record<string, string> = { \")\": \"(\", \"]\": \"[\", \"}\": \"{\" };\n\n// まだ閉じていない開き括弧をスタックに積む\nconst stack: string[] = [];\nlet ok = true;\nfor (const c of s) {\n  if (c === \"(\" || c === \"[\" || c === \"{\") {\n    stack.push(c);\n  } else if (stack.pop() !== pair[c]) {\n    ok = false; // 対応する開き括弧がない、または種類が違う\n    break;\n  }\n}\nconsole.log(ok && stack.length === 0 ? \"Yes\" : \"No\");\n",
+    "explanation": [
+      {
+        "lead": "スタックで最新の開き括弧を管理する。",
+        "body": "開き括弧は積み、閉じ括弧が来たら一番上を取り出して種類を比べる。"
+      },
+      {
+        "lead": "数を数えるだけでは足りない。",
+        "body": "([)] は各種類の個数は合っているが、閉じる順番が違う。スタックならこれを見分けられる。"
+      },
+      {
+        "lead": "最後にスタックが空か確かめる。",
+        "body": "残っていれば閉じていない括弧がある。空のスタックの pop は undefined を返すので、余分な閉じ括弧も検出できる。計算量は O(|S|)。"
+      }
+    ]
+  }
+}

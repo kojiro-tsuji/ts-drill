@@ -1,0 +1,46 @@
+{
+  "id": "valid-parentheses",
+  "title": "正しい括弧列",
+  "difficulty": 2,
+  "statement": "( と ) からなる文字列 S が与えられる。S が正しい括弧列なら Yes、そうでなければ No を出力せよ。正しい括弧列とは、すべての ( に対応する ) が後ろにあり、すべての ) に対応する ( が前にあるものである。",
+  "constraints": [
+    "1 ≤ |S| ≤ 10⁵",
+    "S は ( と ) のみ"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "Yes または No を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "(()())",
+      "output": "Yes"
+    },
+    {
+      "input": "())(",
+      "output": "No"
+    },
+    {
+      "input": "((",
+      "output": "No"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\n\n// depth は「まだ閉じていない ( の数」\nlet depth = 0;\nlet ok = true;\nfor (const c of s) {\n  depth += c === \"(\" ? 1 : -1;\n  if (depth < 0) {\n    ok = false; // 対応する ( がない ) が現れた\n    break;\n  }\n}\nconsole.log(ok && depth === 0 ? \"Yes\" : \"No\");\n",
+    "explanation": [
+      {
+        "lead": "開いている括弧の数を数える。",
+        "body": "( で 1 増やし、) で 1 減らす。"
+      },
+      {
+        "lead": "途中で負になったら失敗。",
+        "body": "負になるのは、対応する ( がない ) が現れたとき。"
+      },
+      {
+        "lead": "最後に 0 なら成功。",
+        "body": "0 でなければ閉じていない ( が残っている。計算量は O(|S|)。"
+      }
+    ]
+  }
+}

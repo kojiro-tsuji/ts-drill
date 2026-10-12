@@ -1,0 +1,47 @@
+{
+  "id": "grid-paths-blocked",
+  "title": "障害物のあるグリッドの経路数",
+  "difficulty": 4,
+  "statement": "H 行 W 列のグリッドがあり、# は通れないマス、. は通れるマスである。左上のマスから右下のマスまで、右か下に 1 マスずつ進むとき、通れるマスだけを通る経路の数を 10⁹ + 7 で割った余りを出力せよ。",
+  "constraints": [
+    "1 ≤ H, W ≤ 1000",
+    "各マスは # または .",
+    "左上と右下のマスは ."
+  ],
+  "inputFormat": "H W\nS1\n…\nSH",
+  "outputFormat": "経路の数を 10⁹ + 7 で割った余りを 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 4\n...#\n.#..\n....",
+      "output": "3"
+    },
+    {
+      "input": "2 2\n.#\n#.",
+      "output": "0"
+    },
+    {
+      "input": "1 1\n.",
+      "output": "1"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [h, w] = lines[0].split(\" \").map(Number);\nconst grid = lines.slice(1, h + 1);\nconst MOD = 1_000_000_007;\n\n// dp[x] = 今の行の x 列目にたどり着く経路の数（1 行ぶんを使い回す）\nconst dp = new Array(w).fill(0);\ndp[0] = 1;\nfor (let y = 0; y < h; y++) {\n  for (let x = 0; x < w; x++) {\n    if (grid[y][x] === \"#\") dp[x] = 0;\n    else if (x > 0) dp[x] = (dp[x] + dp[x - 1]) % MOD; // 上から + 左から\n  }\n}\nconsole.log(dp[w - 1]);\n",
+    "explanation": [
+      {
+        "lead": "上と左から来る経路を足す。",
+        "body": "あるマスへの経路の数は、上のマスへの経路の数と左のマスへの経路の数の和。通れないマスは 0 にする。"
+      },
+      {
+        "lead": "1 行ぶんの配列を使い回す。",
+        "body": "dp[x] には更新前は上のマスの値が、dp[x − 1] には更新済みの左のマスの値が入っている。"
+      },
+      {
+        "lead": "計算量は O(HW)。",
+        "body": "足すたびに余りを取れば、値は Number で正確に扱える範囲に収まる。"
+      }
+    ]
+  }
+}

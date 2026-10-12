@@ -1,0 +1,47 @@
+{
+  "id": "next-greater",
+  "title": "次に大きい要素",
+  "difficulty": 3,
+  "statement": "長さ N の整数列 A が与えられる。各 i について、i より右にあって Ai より大きい要素のうち最も左にあるものの値を出力せよ。そのような要素がなければ −1 を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 2 × 10⁵",
+    "1 ≤ Ai ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nA1 A2 … AN",
+  "outputFormat": "N 個の答えを空白区切りで 1 行に出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5\n2 1 4 3 5",
+      "output": "4 4 5 5 -1"
+    },
+    {
+      "input": "3\n3 2 1",
+      "output": "-1 -1 -1"
+    },
+    {
+      "input": "4\n1 1 1 2",
+      "output": "2 2 2 -1"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(first);\nconst a = second.split(\" \").map(Number);\n\nconst answer = new Array(n).fill(-1);\n// まだ答えが決まっていない添字を、値が減少する順に積んでおく\nconst stack: number[] = [];\nfor (let i = 0; i < n; i++) {\n  while (stack.length > 0 && a[stack[stack.length - 1]] < a[i]) {\n    answer[stack.pop()!] = a[i];\n  }\n  stack.push(i);\n}\nconsole.log(answer.join(\" \"));\n",
+    "explanation": [
+      {
+        "lead": "答えが未定の要素をスタックで持つ。",
+        "body": "左から見ていき、今の値より小さい要素をスタックから取り出して、その答えを今の値にする。"
+      },
+      {
+        "lead": "スタックの中は常に広義単調減少。",
+        "body": "小さい要素は取り出されるので、残るのは「まだ自分より大きい値に出会っていない」要素だけになる。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "各要素はスタックに 1 回積まれ、高々 1 回取り出されるだけ。最後まで残った要素の答えは −1。"
+      }
+    ]
+  }
+}

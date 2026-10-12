@@ -1,0 +1,46 @@
+{
+  "id": "count-primes-sieve",
+  "title": "素数の個数",
+  "difficulty": 3,
+  "statement": "整数 N が与えられる。N 以下の素数の個数を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁷",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N",
+  "outputFormat": "素数の個数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "10",
+      "output": "4"
+    },
+    {
+      "input": "1",
+      "output": "0"
+    },
+    {
+      "input": "10000000",
+      "output": "664579"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst n = Number(readFileSync(0, \"utf8\").trim());\n\n// エラトステネスのふるい: composite[i] = 1 なら i は合成数\nconst composite = new Uint8Array(n + 1);\nlet count = 0;\nfor (let i = 2; i <= n; i++) {\n  if (composite[i]) continue;\n  count++;\n  // i の倍数を消す。i * i 未満の倍数は、より小さい素数ですでに消えている\n  for (let j = i * i; j <= n; j += i) composite[j] = 1;\n}\nconsole.log(count);\n",
+    "explanation": [
+      {
+        "lead": "エラトステネスのふるいを使う。",
+        "body": "2 から順に、消されていない数を素数として数え、その倍数をすべて消していく。"
+      },
+      {
+        "lead": "倍数は i × i から消せばよい。",
+        "body": "それより小さい倍数は、i より小さい素数の倍数としてすでに消えている。"
+      },
+      {
+        "lead": "計算量は O(N log log N)。",
+        "body": "1 つずつ素数判定するより大幅に速い。Uint8Array を使うとメモリも小さく済む。"
+      }
+    ]
+  }
+}

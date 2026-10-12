@@ -1,0 +1,47 @@
+{
+  "id": "min-path-sum-grid",
+  "title": "グリッドの最小コスト経路",
+  "difficulty": 4,
+  "statement": "H 行 W 列のグリッドの各マスに、コスト C(i,j) が書かれている。左上のマスから右下のマスまで、右か下に 1 マスずつ進むとき、通ったマス（最初と最後のマスを含む）のコストの合計の最小値を出力せよ。",
+  "constraints": [
+    "1 ≤ H, W ≤ 1000",
+    "0 ≤ C(i,j) ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "H W\nC(1,1) … C(1,W)\n…\nC(H,1) … C(H,W)",
+  "outputFormat": "最小コストを 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 3\n1 3 1\n1 5 1\n4 2 1",
+      "output": "7"
+    },
+    {
+      "input": "1 1\n7",
+      "output": "7"
+    },
+    {
+      "input": "2 3\n1 2 3\n4 5 6",
+      "output": "12"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [h, w] = lines[0].split(\" \").map(Number);\n\n// dp[x] = 今の行の x 列目にたどり着く最小コスト\nconst dp = new Array(w).fill(Infinity);\nfor (let y = 0; y < h; y++) {\n  const row = lines[y + 1].split(\" \").map(Number);\n  for (let x = 0; x < w; x++) {\n    if (y === 0 && x === 0) {\n      dp[x] = row[x];\n      continue;\n    }\n    const fromLeft = x > 0 ? dp[x - 1] : Infinity;\n    dp[x] = Math.min(dp[x], fromLeft) + row[x]; // dp[x] は上から来た場合\n  }\n}\nconsole.log(dp[w - 1]);\n",
+    "explanation": [
+      {
+        "lead": "上か左の安いほうから来る。",
+        "body": "あるマスまでの最小コストは、上のマスと左のマスの最小コストの小さいほうに、そのマスのコストを足したもの。"
+      },
+      {
+        "lead": "1 行ぶんの配列を使い回す。",
+        "body": "更新前の dp[x] は上のマス、更新済みの dp[x − 1] は左のマスの値になっている。端では存在しない側を Infinity とする。"
+      },
+      {
+        "lead": "計算量は O(HW)。",
+        "body": "合計は最大 2 × 10¹² 程度で、Number で正確に扱える。"
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "product-parity",
+  "title": "積の偶奇",
+  "difficulty": 1,
+  "statement": "正の整数 A, B が与えられる。積 A × B が偶数なら Even、奇数なら Odd を出力せよ。",
+  "constraints": [
+    "1 ≤ A, B ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "A B",
+  "outputFormat": "Even または Odd を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 4",
+      "output": "Even"
+    },
+    {
+      "input": "1 21",
+      "output": "Odd"
+    },
+    {
+      "input": "999999999 999999999",
+      "output": "Odd"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [a, b] = readFileSync(0, \"utf8\").trim().split(\" \").map(Number);\n\n// どちらかが偶数なら積は偶数。積そのものは計算しない\nconst even = a % 2 === 0 || b % 2 === 0;\nconsole.log(even ? \"Even\" : \"Odd\");\n",
+    "explanation": [
+      {
+        "lead": "どちらかが偶数なら積は偶数。",
+        "body": "積が奇数になるのは、A と B がともに奇数のときだけ。"
+      },
+      {
+        "lead": "積を直接計算しない。",
+        "body": "A × B は最大 10¹⁸ になり、Number では正確に表せない。偶奇だけなら各数の余りを見れば足りる。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "余りを 2 回求めるだけ。"
+      }
+    ]
+  }
+}

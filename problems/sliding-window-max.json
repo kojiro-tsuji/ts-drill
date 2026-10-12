@@ -1,0 +1,47 @@
+{
+  "id": "sliding-window-max",
+  "title": "スライド最大値",
+  "difficulty": 5,
+  "statement": "長さ N の整数列 A と整数 K が与えられる。i = 1, 2, …, N − K + 1 について、A(i), A(i+1), …, A(i+K−1) の最大値を求め、空白区切りで出力せよ。",
+  "constraints": [
+    "1 ≤ K ≤ N ≤ 2 × 10⁵",
+    "−10⁹ ≤ Ai ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N K\nA1 A2 … AN",
+  "outputFormat": "N − K + 1 個の最大値を空白区切りで 1 行に出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "8 3\n1 3 -1 -3 5 3 6 7",
+      "output": "3 3 5 5 6 7"
+    },
+    {
+      "input": "3 1\n2 -1 4",
+      "output": "2 -1 4"
+    },
+    {
+      "input": "4 4\n4 3 2 1",
+      "output": "4"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, k] = first.split(\" \").map(Number);\nconst a = second.split(\" \").map(Number);\n\n// 両端キュー（添字を持つ）。中の値は先頭から単調減少に保つ\nconst deque = new Int32Array(n);\nlet head = 0;\nlet tail = 0;\nconst out: number[] = [];\nfor (let i = 0; i < n; i++) {\n  // 新しい値以下の要素は、今後最大値になることはない\n  while (tail > head && a[deque[tail - 1]] <= a[i]) tail--;\n  deque[tail++] = i;\n  // 窓から外れた先頭を捨てる\n  if (deque[head] <= i - k) head++;\n  if (i >= k - 1) out.push(a[deque[head]]);\n}\nconsole.log(out.join(\" \"));\n",
+    "explanation": [
+      {
+        "lead": "最大値の候補だけを両端キューに残す。",
+        "body": "新しい値より小さい（または等しい）古い値は、窓に残っている間ずっと新しい値に負けるので、捨ててよい。"
+      },
+      {
+        "lead": "先頭が常に窓の最大値になる。",
+        "body": "キューの中は値が単調減少なので、先頭が最大。窓から外れた添字は先頭から取り除く。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "各添字はキューに 1 回入り、高々 1 回出るだけ。窓ごとに K 個見ると O(NK) で間に合わない。"
+      }
+    ]
+  }
+}

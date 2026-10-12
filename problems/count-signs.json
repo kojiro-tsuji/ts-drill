@@ -1,0 +1,47 @@
+{
+  "id": "count-signs",
+  "title": "正・負・ゼロの個数",
+  "difficulty": 1,
+  "statement": "N 個の整数 A1, A2, …, AN が与えられる。正の数、負の数、0 の個数を、この順に空白区切りで出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁵",
+    "−10⁹ ≤ Ai ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nA1 A2 … AN",
+  "outputFormat": "正・負・0 の個数を空白区切りで 1 行に出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5\n3 -1 0 7 -2",
+      "output": "2 2 1"
+    },
+    {
+      "input": "3\n0 0 0",
+      "output": "0 0 3"
+    },
+    {
+      "input": "1\n-5",
+      "output": "0 1 0"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\nlet positive = 0;\nlet negative = 0;\nlet zero = 0;\nfor (const x of a) {\n  if (x > 0) positive++;\n  else if (x < 0) negative++;\n  else zero++;\n}\nconsole.log(positive + \" \" + negative + \" \" + zero);\n",
+    "explanation": [
+      {
+        "lead": "3 つの数え役を用意する。",
+        "body": "正・負・0 のどれかに必ず当てはまるので、if / else if / else で振り分ける。"
+      },
+      {
+        "lead": "1 回の走査で全部数える。",
+        "body": "filter を 3 回使うより、1 回のループで済ませるほうが無駄がない。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "各要素を 1 回ずつ見るだけ。"
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "seconds-to-hms",
+  "title": "秒を時分秒に",
+  "difficulty": 1,
+  "statement": "秒数 S が与えられる。S 秒を h:m:s の形式で出力せよ。h, m, s は 0 埋めせずにそのまま出力し、m と s は 0 以上 59 以下とする。",
+  "constraints": [
+    "0 ≤ S ≤ 86399",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "h:m:s を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3661",
+      "output": "1:1:1"
+    },
+    {
+      "input": "0",
+      "output": "0:0:0"
+    },
+    {
+      "input": "86399",
+      "output": "23:59:59"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = Number(readFileSync(0, \"utf8\").trim());\n\nconst h = Math.floor(s / 3600);\nconst m = Math.floor((s % 3600) / 60);\nconst sec = s % 60;\nconsole.log(h + \":\" + m + \":\" + sec);\n",
+    "explanation": [
+      {
+        "lead": "1 時間は 3600 秒。",
+        "body": "S を 3600 で割った商が時間になる。"
+      },
+      {
+        "lead": "余りから分と秒を出す。",
+        "body": "3600 で割った余りを 60 で割った商が分、S を 60 で割った余りが秒。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "割り算を数回するだけ。"
+      }
+    ]
+  }
+}

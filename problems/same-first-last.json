@@ -1,0 +1,46 @@
+{
+  "id": "same-first-last",
+  "title": "先頭と末尾",
+  "difficulty": 1,
+  "statement": "英小文字からなる文字列 S が与えられる。S の最初の文字と最後の文字が同じなら Yes、違うなら No を出力せよ。",
+  "constraints": [
+    "1 ≤ |S| ≤ 10⁵",
+    "S は英小文字のみ"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "Yes または No を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "level",
+      "output": "Yes"
+    },
+    {
+      "input": "abc",
+      "output": "No"
+    },
+    {
+      "input": "x",
+      "output": "Yes"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\nconsole.log(s[0] === s[s.length - 1] ? \"Yes\" : \"No\");\n",
+    "explanation": [
+      {
+        "lead": "添字で文字を取り出す。",
+        "body": "最初の文字は s[0]、最後の文字は s[s.length - 1]。"
+      },
+      {
+        "lead": "1 文字の場合も正しく動く。",
+        "body": "|S| = 1 なら最初と最後が同じ文字を指すので Yes になる。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "2 文字を比べるだけ。"
+      }
+    ]
+  }
+}

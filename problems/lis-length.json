@@ -1,0 +1,47 @@
+{
+  "id": "lis-length",
+  "title": "最長増加部分列",
+  "difficulty": 4,
+  "statement": "長さ N の整数列 A が与えられる。A の部分列（いくつかの要素を取り除き、残りを順番を変えずに並べたもの）で、狭義単調増加になっているもののうち、最も長いものの長さを出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 2 × 10⁵",
+    "1 ≤ Ai ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nA1 A2 … AN",
+  "outputFormat": "最長の長さを 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "6\n3 1 4 1 5 9",
+      "output": "4"
+    },
+    {
+      "input": "4\n5 5 5 5",
+      "output": "1"
+    },
+    {
+      "input": "8\n10 9 2 5 3 7 101 18",
+      "output": "4"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\n// tails[k] = 長さ k+1 の増加部分列の末尾として考えられる最小値\nconst tails: number[] = [];\nfor (const x of a) {\n  // x 以上の最初の位置を二分探索する\n  let lo = 0;\n  let hi = tails.length;\n  while (lo < hi) {\n    const mid = (lo + hi) >> 1;\n    if (tails[mid] < x) lo = mid + 1;\n    else hi = mid;\n  }\n  tails[lo] = x; // lo === tails.length なら末尾に追加される\n}\nconsole.log(tails.length);\n",
+    "explanation": [
+      {
+        "lead": "長さごとに「末尾の最小値」を持つ。",
+        "body": "tails[k] は長さ k+1 の増加部分列の末尾として最小の値。末尾が小さいほど、後ろに要素を足しやすい。"
+      },
+      {
+        "lead": "tails は常に増加列なので二分探索できる。",
+        "body": "x 以上の最初の位置を x で置き換える。すべてより大きければ末尾に足し、最長の長さが 1 伸びる。"
+      },
+      {
+        "lead": "計算量は O(N log N)。",
+        "body": "各 i について前を全部見る O(N²) の DP では、N = 2 × 10⁵ で間に合わない。狭義増加なので「x 以上」を探す。"
+      }
+    ]
+  }
+}

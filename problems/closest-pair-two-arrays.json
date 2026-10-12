@@ -1,0 +1,47 @@
+{
+  "id": "closest-pair-two-arrays",
+  "title": "2 つの列の最小差",
+  "difficulty": 3,
+  "statement": "長さ N の整数列 A と長さ M の整数列 B が与えられる。A から 1 つ、B から 1 つ選ぶとき、2 つの値の差の絶対値の最小値を出力せよ。",
+  "constraints": [
+    "1 ≤ N, M ≤ 2 × 10⁵",
+    "−10⁹ ≤ Ai, Bi ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N M\nA1 A2 … AN\nB1 B2 … BM",
+  "outputFormat": "最小値を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 3\n1 6 11\n4 9 20",
+      "output": "2"
+    },
+    {
+      "input": "2 2\n5 5\n5 100",
+      "output": "0"
+    },
+    {
+      "input": "1 1\n-1000000000\n1000000000",
+      "output": "2000000000"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = lines[1].split(\" \").map(Number).sort((x, y) => x - y);\nconst b = lines[2].split(\" \").map(Number).sort((x, y) => x - y);\n\n// 両方を昇順にして、小さいほうを進める\nlet i = 0;\nlet j = 0;\nlet best = Infinity;\nwhile (i < a.length && j < b.length) {\n  best = Math.min(best, Math.abs(a[i] - b[j]));\n  if (a[i] < b[j]) i++;\n  else j++;\n}\nconsole.log(best);\n",
+    "explanation": [
+      {
+        "lead": "両方の列を並べ替える。",
+        "body": "昇順に並べると、近い値どうしが同じような位置に来る。"
+      },
+      {
+        "lead": "小さいほうを 1 つ進める。",
+        "body": "a[i] < b[j] なら、a[i] をこれ以上大きい b と組み合わせても差は広がるだけ。だから i を進める。"
+      },
+      {
+        "lead": "計算量は O(N log N + M log M)。",
+        "body": "並べ替えた後は、2 つの位置が合わせて N + M 回しか動かない。"
+      }
+    ]
+  }
+}

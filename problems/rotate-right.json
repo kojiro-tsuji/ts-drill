@@ -1,0 +1,48 @@
+{
+  "id": "rotate-right",
+  "title": "配列の右回転",
+  "difficulty": 2,
+  "statement": "長さ N の整数列 A と整数 K が与えられる。A を右に K 回回転させた列を出力せよ。右に 1 回回転させるとは、末尾の要素を先頭に移動することである。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁵",
+    "0 ≤ K ≤ 10¹⁸",
+    "−10⁹ ≤ Ai ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N K\nA1 A2 … AN",
+  "outputFormat": "回転後の列を空白区切りで 1 行に出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5 2\n1 2 3 4 5",
+      "output": "4 5 1 2 3"
+    },
+    {
+      "input": "3 3\n7 8 9",
+      "output": "7 8 9"
+    },
+    {
+      "input": "4 1000000000000000001\n1 2 3 4",
+      "output": "4 1 2 3"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [nStr, kStr] = first.split(\" \");\nconst n = Number(nStr);\nconst a = second.split(\" \");\n\n// N 回で元に戻るので K mod N 回だけ回す。K は大きいので BigInt で余りを取る\nconst k = Number(BigInt(kStr) % BigInt(n));\nconst rotated = [...a.slice(n - k), ...a.slice(0, n - k)];\nconsole.log(rotated.join(\" \"));\n",
+    "explanation": [
+      {
+        "lead": "N 回回すと元に戻る。",
+        "body": "だから K 回の回転は K mod N 回と同じ。K は最大 10¹⁸ なので、余りは BigInt で計算する。"
+      },
+      {
+        "lead": "後ろ k 個を前に持ってくる。",
+        "body": "右に k 回回すと、末尾の k 個が先頭に来る。slice で 2 つに分けてつなげ直せばよい。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "1 回ずつ回すシミュレーションは不要。要素は数値に変換せず文字列のまま扱っている。"
+      }
+    ]
+  }
+}

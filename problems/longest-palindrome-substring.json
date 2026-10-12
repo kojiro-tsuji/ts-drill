@@ -1,0 +1,46 @@
+{
+  "id": "longest-palindrome-substring",
+  "title": "最長の回文部分文字列",
+  "difficulty": 4,
+  "statement": "英小文字からなる文字列 S が与えられる。S の連続する部分文字列のうち、回文（前から読んでも後ろから読んでも同じ）であるものの最大の長さを出力せよ。",
+  "constraints": [
+    "1 ≤ |S| ≤ 5000",
+    "S は英小文字のみ"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "最大の長さを 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "babad",
+      "output": "3"
+    },
+    {
+      "input": "abcd",
+      "output": "1"
+    },
+    {
+      "input": "forgeeksskeegfor",
+      "output": "10"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\nconst n = s.length;\n\n// 中心から左右に広げられるだけ広げ、その回文の長さを返す\nfunction expand(left: number, right: number): number {\n  while (left >= 0 && right < n && s[left] === s[right]) {\n    left--;\n    right++;\n  }\n  return right - left - 1;\n}\n\nlet best = 1;\nfor (let c = 0; c < n; c++) {\n  best = Math.max(best, expand(c, c)); // 長さが奇数の回文（中心が 1 文字）\n  best = Math.max(best, expand(c, c + 1)); // 長さが偶数の回文（中心が文字の間）\n}\nconsole.log(best);\n",
+    "explanation": [
+      {
+        "lead": "回文の中心を決めて左右に広げる。",
+        "body": "回文は中心から左右対称。中心を固定し、両端の文字が同じ間だけ外側へ広げる。"
+      },
+      {
+        "lead": "中心は 2 種類ある。",
+        "body": "長さが奇数なら中心は 1 文字、偶数なら 2 文字の間。両方を試す。"
+      },
+      {
+        "lead": "計算量は O(|S|²)。",
+        "body": "中心が 2|S| 個あり、それぞれ最大 |S| 文字広げる。5000 なら間に合う。Manacher 法を使えば O(|S|) にもできる。"
+      }
+    ]
+  }
+}

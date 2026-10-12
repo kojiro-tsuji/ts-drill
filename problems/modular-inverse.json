@@ -1,0 +1,47 @@
+{
+  "id": "modular-inverse",
+  "title": "モジュラ逆数",
+  "difficulty": 5,
+  "statement": "整数 A, M が与えられる。A × X を M で割った余りが 1 になる、0 以上 M 未満の整数 X を出力せよ（このような X は存在すれば 1 つに決まる）。存在しなければ −1 を出力せよ。",
+  "constraints": [
+    "0 ≤ A ≤ 10¹⁸",
+    "2 ≤ M ≤ 10¹⁸",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "A M",
+  "outputFormat": "X または −1 を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 11",
+      "output": "4"
+    },
+    {
+      "input": "4 10",
+      "output": "-1"
+    },
+    {
+      "input": "123456789 1000000007",
+      "output": "18633540"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [a, m] = readFileSync(0, \"utf8\").trim().split(\" \").map(BigInt);\n\n// 拡張ユークリッドの互除法: a*s ≡ r (mod m) を保ちながら r を小さくしていく\nlet [oldR, r] = [a % m, m];\nlet [oldS, s] = [1n, 0n];\nwhile (r !== 0n) {\n  const q = oldR / r;\n  [oldR, r] = [r, oldR - q * r];\n  [oldS, s] = [s, oldS - q * s];\n}\n\n// oldR は gcd(a, m)。1 でなければ逆数は存在しない\nif (oldR !== 1n) console.log(\"-1\");\nelse console.log((((oldS % m) + m) % m).toString());\n",
+    "explanation": [
+      {
+        "lead": "逆数があるのは A と M が互いに素なときだけ。",
+        "body": "A × X ≡ 1 (mod M) は、ある整数 Y で A X + M Y = 1 と同じ。これが解けるのは gcd(A, M) = 1 のとき。"
+      },
+      {
+        "lead": "拡張ユークリッドの互除法で X を求める。",
+        "body": "互除法で余りを小さくしていくとき、各余りが A の何倍（mod M）かを s として一緒に更新する。余りが gcd = 1 になったときの s が答え。"
+      },
+      {
+        "lead": "負の値を 0 以上に直す。",
+        "body": "s は負になることがあるので、M を足して余りを取る。値が 10¹⁸ と大きいので BigInt を使う。計算量は O(log M)。"
+      }
+    ]
+  }
+}

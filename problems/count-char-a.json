@@ -1,0 +1,46 @@
+{
+  "id": "count-char-a",
+  "title": "a の個数",
+  "difficulty": 1,
+  "statement": "英小文字からなる文字列 S が与えられる。S に含まれる文字 a の個数を出力せよ。",
+  "constraints": [
+    "1 ≤ |S| ≤ 10⁵",
+    "S は英小文字のみ"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "a の個数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "banana",
+      "output": "3"
+    },
+    {
+      "input": "xyz",
+      "output": "0"
+    },
+    {
+      "input": "aaaa",
+      "output": "4"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\n\nlet count = 0;\nfor (const c of s) {\n  if (c === \"a\") count++;\n}\nconsole.log(count);\n",
+    "explanation": [
+      {
+        "lead": "1 文字ずつ見て数える。",
+        "body": "for...of で文字列を 1 文字ずつ取り出せる。"
+      },
+      {
+        "lead": "別の書き方もある。",
+        "body": "s.split(\"a\").length - 1 でも数えられる。a で区切った個数は a の個数より 1 多い。"
+      },
+      {
+        "lead": "計算量は O(|S|)。",
+        "body": "各文字を 1 回ずつ見るだけ。"
+      }
+    ]
+  }
+}

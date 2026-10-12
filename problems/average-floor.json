@@ -1,0 +1,47 @@
+{
+  "id": "average-floor",
+  "title": "平均点の切り捨て",
+  "difficulty": 1,
+  "statement": "N 人のテストの点数 A1, A2, …, AN が与えられる。平均点の小数点以下を切り捨てた値を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁵",
+    "0 ≤ Ai ≤ 100",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nA1 A2 … AN",
+  "outputFormat": "平均点（切り捨て）を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3\n70 80 95",
+      "output": "81"
+    },
+    {
+      "input": "1\n0",
+      "output": "0"
+    },
+    {
+      "input": "4\n100 99 99 99",
+      "output": "99"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(first);\nconst a = second.split(\" \").map(Number);\n\nconst sum = a.reduce((acc, x) => acc + x, 0);\nconsole.log(Math.floor(sum / n));\n",
+    "explanation": [
+      {
+        "lead": "合計を求めてから割る。",
+        "body": "reduce で合計を出し、人数 N で割る。"
+      },
+      {
+        "lead": "Math.floor で切り捨てる。",
+        "body": "点数は 0 以上なので、Math.floor と Math.trunc は同じ結果になる。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "合計を 1 回の走査で求める。"
+      }
+    ]
+  }
+}

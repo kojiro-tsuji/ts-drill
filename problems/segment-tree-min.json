@@ -1,0 +1,49 @@
+{
+  "id": "segment-tree-min",
+  "title": "区間最小値と一点更新",
+  "difficulty": 5,
+  "statement": "長さ N の整数列 A と、Q 個のクエリが与えられる。クエリ 1 i x では Ai を x に変更する。クエリ 2 l r では A(l), A(l+1), …, A(r) の最小値を出力する。クエリを順に処理せよ。",
+  "constraints": [
+    "1 ≤ N, Q ≤ 2 × 10⁵",
+    "−10⁹ ≤ Ai, x ≤ 10⁹",
+    "1 ≤ i ≤ N",
+    "1 ≤ l ≤ r ≤ N",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N Q\nA1 A2 … AN\nquery1\n…\nqueryQ",
+  "outputFormat": "種類 2 のクエリごとに 1 行出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5 5\n5 3 8 6 1\n2 1 3\n2 2 5\n1 5 9\n2 4 5\n1 2 7",
+      "output": "3\n1\n6"
+    },
+    {
+      "input": "1 2\n4\n2 1 1\n1 1 -4",
+      "output": "4"
+    },
+    {
+      "input": "3 3\n2 2 2\n1 2 1\n2 1 1\n2 1 3",
+      "output": "2\n1"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, q] = lines[0].split(\" \").map(Number);\nconst a = lines[1].split(\" \").map(Number);\n\n// 葉が size 個の完全二分木。tree[1] が根、tree[size + i] が Ai\nlet size = 1;\nwhile (size < n) size <<= 1;\nconst tree = new Array(2 * size).fill(Infinity);\nfor (let i = 0; i < n; i++) tree[size + i] = a[i];\nfor (let i = size - 1; i >= 1; i--) tree[i] = Math.min(tree[2 * i], tree[2 * i + 1]);\n\nfunction update(i: number, x: number): void {\n  i += size;\n  tree[i] = x;\n  // 親をたどって最小値を更新する\n  for (i >>= 1; i >= 1; i >>= 1) tree[i] = Math.min(tree[2 * i], tree[2 * i + 1]);\n}\n\n// 半開区間 [l, r) の最小値\nfunction query(l: number, r: number): number {\n  let res = Infinity;\n  for (l += size, r += size; l < r; l >>= 1, r >>= 1) {\n    if (l & 1) res = Math.min(res, tree[l++]);\n    if (r & 1) res = Math.min(res, tree[--r]);\n  }\n  return res;\n}\n\nconst out: number[] = [];\nfor (let k = 0; k < q; k++) {\n  const [t, x, y] = lines[2 + k].split(\" \").map(Number);\n  if (t === 1) update(x - 1, y);\n  else out.push(query(x - 1, y));\n}\nconsole.log(out.join(\"\\n\"));\n",
+    "explanation": [
+      {
+        "lead": "セグメント木で区間の最小値を管理する。",
+        "body": "各節点に、担当する区間の最小値を持たせる。葉が元の列で、親は 2 つの子の最小値。"
+      },
+      {
+        "lead": "更新は葉から根へ、取得は区間を節点で覆う。",
+        "body": "1 か所の変更では、根までの約 log N 個の節点だけ直せばよい。区間の最小値は、区間をちょうど覆う O(log N) 個の節点の最小値になる。"
+      },
+      {
+        "lead": "計算量は O((N + Q) log N)。",
+        "body": "毎回区間を見る方法では O(NQ) で間に合わない。"
+      }
+    ]
+  }
+}

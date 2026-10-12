@@ -1,0 +1,46 @@
+{
+  "id": "min-coins",
+  "title": "硬貨の最小枚数",
+  "difficulty": 3,
+  "statement": "1 円、5 円、10 円、50 円、100 円、500 円の硬貨がそれぞれ十分な枚数ある。ちょうど N 円を支払うのに必要な硬貨の最小枚数を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N",
+  "outputFormat": "最小枚数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "1234",
+      "output": "11"
+    },
+    {
+      "input": "1",
+      "output": "1"
+    },
+    {
+      "input": "1000000000",
+      "output": "2000000"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nlet n = Number(readFileSync(0, \"utf8\").trim());\n\n// 大きい硬貨から、使えるだけ使う\nlet coins = 0;\nfor (const c of [500, 100, 50, 10, 5, 1]) {\n  coins += Math.floor(n / c);\n  n %= c;\n}\nconsole.log(coins);\n",
+    "explanation": [
+      {
+        "lead": "大きい硬貨から使えるだけ使う（貪欲法）。",
+        "body": "各硬貨の額が 1 つ下の額の倍数になっているので、大きい硬貨を優先するのが最善になる。"
+      },
+      {
+        "lead": "貪欲法がいつも正しいとは限らない。",
+        "body": "例えば 1, 3, 4 円の硬貨で 6 円を払うと、貪欲では 4+1+1 の 3 枚だが、3+3 の 2 枚が最適。そういう場合は動的計画法を使う。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "硬貨の種類は 6 つだけ。"
+      }
+    ]
+  }
+}

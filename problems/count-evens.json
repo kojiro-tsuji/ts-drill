@@ -1,6 +1,7 @@
 {
   "id": "count-evens",
   "title": "偶数を数える",
+  "difficulty": 1,
   "statement": "長さ N の正の整数列 A1, A2, …, AN が与えられる。このうち偶数であるものの個数を出力せよ。",
   "constraints": [
     "1 ≤ N ≤ 10⁵",

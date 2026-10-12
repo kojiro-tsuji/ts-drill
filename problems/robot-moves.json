@@ -1,0 +1,46 @@
+{
+  "id": "robot-moves",
+  "title": "ロボットの移動",
+  "difficulty": 2,
+  "statement": "原点 (0, 0) にロボットがいる。U, D, L, R からなる命令列 S が与えられ、ロボットは先頭から順に、U なら y 座標を 1 増やし、D なら 1 減らし、R なら x 座標を 1 増やし、L なら 1 減らす。すべての命令を実行した後の座標 x, y と、原点からのマンハッタン距離 |x| + |y| を、この順に空白区切りで出力せよ。",
+  "constraints": [
+    "1 ≤ |S| ≤ 10⁵",
+    "S は U, D, L, R のみ"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "x, y, マンハッタン距離を空白区切りで 1 行に出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "UURDL",
+      "output": "0 1 1"
+    },
+    {
+      "input": "LLLL",
+      "output": "-4 0 4"
+    },
+    {
+      "input": "UDUDRL",
+      "output": "0 0 0"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\n\nlet x = 0;\nlet y = 0;\nfor (const c of s) {\n  if (c === \"U\") y++;\n  else if (c === \"D\") y--;\n  else if (c === \"R\") x++;\n  else x--;\n}\nconsole.log(x + \" \" + y + \" \" + (Math.abs(x) + Math.abs(y)));\n",
+    "explanation": [
+      {
+        "lead": "命令どおりに座標を動かす。",
+        "body": "1 文字ずつ見て x, y を増減させるだけのシミュレーション。"
+      },
+      {
+        "lead": "マンハッタン距離は絶対値の和。",
+        "body": "|x| + |y| を Math.abs で求める。"
+      },
+      {
+        "lead": "計算量は O(|S|)。",
+        "body": "命令の数だけ処理する。"
+      }
+    ]
+  }
+}

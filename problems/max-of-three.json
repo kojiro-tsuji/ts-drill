@@ -1,0 +1,46 @@
+{
+  "id": "max-of-three",
+  "title": "3 つの最大値",
+  "difficulty": 1,
+  "statement": "整数 A, B, C が与えられる。このうち最も大きい値を出力せよ。",
+  "constraints": [
+    "−10⁹ ≤ A, B, C ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "A B C",
+  "outputFormat": "最大値を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 9 4",
+      "output": "9"
+    },
+    {
+      "input": "-5 -2 -8",
+      "output": "-2"
+    },
+    {
+      "input": "7 7 7",
+      "output": "7"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst nums = readFileSync(0, \"utf8\").trim().split(\" \").map(Number);\nconsole.log(Math.max(...nums));\n",
+    "explanation": [
+      {
+        "lead": "Math.max に配列を展開して渡す。",
+        "body": "...nums で配列の要素を引数として並べられる。要素が 3 つなら引数の上限を気にしなくてよい。"
+      },
+      {
+        "lead": "負の数でもそのまま比べられる。",
+        "body": "Number に変換してから比べるので、文字列としての大小にはならない。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "3 つを比べるだけ。"
+      }
+    ]
+  }
+}

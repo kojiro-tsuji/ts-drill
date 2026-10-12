@@ -1,0 +1,46 @@
+{
+  "id": "run-length-encoding",
+  "title": "ランレングス圧縮",
+  "difficulty": 2,
+  "statement": "英小文字からなる文字列 S が与えられる。S を、同じ文字が連続する部分ごとに「文字」と「連続する個数」の組に置き換えてつなげた文字列を出力せよ。例えば aaabcc は a3b1c2 になる。",
+  "constraints": [
+    "1 ≤ |S| ≤ 10⁵",
+    "S は英小文字のみ"
+  ],
+  "inputFormat": "S",
+  "outputFormat": "圧縮した文字列を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "aaabcc",
+      "output": "a3b1c2"
+    },
+    {
+      "input": "z",
+      "output": "z1"
+    },
+    {
+      "input": "abcd",
+      "output": "a1b1c1d1"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\n\nconst parts: string[] = [];\nlet i = 0;\nwhile (i < s.length) {\n  // 同じ文字が続く限り j を進める\n  let j = i;\n  while (j < s.length && s[j] === s[i]) j++;\n  parts.push(s[i] + (j - i));\n  i = j;\n}\nconsole.log(parts.join(\"\"));\n",
+    "explanation": [
+      {
+        "lead": "連続する区間を 2 つの位置で表す。",
+        "body": "i を区間の先頭、j を区間の次の位置として、同じ文字が続く限り j を進める。長さは j − i。"
+      },
+      {
+        "lead": "次の区間は j から始める。",
+        "body": "i = j とすれば、すべての文字をちょうど 1 回ずつ見ることになる。"
+      },
+      {
+        "lead": "計算量は O(|S|)。",
+        "body": "i と j はどちらも後戻りしない。"
+      }
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "has-duplicate",
+  "title": "重複があるか",
+  "difficulty": 2,
+  "statement": "N 個の整数 A1, A2, …, AN が与えられる。同じ値が 2 回以上現れるなら Yes、すべて異なるなら No を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁵",
+    "−10⁹ ≤ Ai ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nA1 A2 … AN",
+  "outputFormat": "Yes または No を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5\n1 2 3 2 5",
+      "output": "Yes"
+    },
+    {
+      "input": "3\n7 8 9",
+      "output": "No"
+    },
+    {
+      "input": "1\n0",
+      "output": "No"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\n// Set は同じ値を 1 つしか持たない\nconst unique = new Set(a);\nconsole.log(unique.size < a.length ? \"Yes\" : \"No\");\n",
+    "explanation": [
+      {
+        "lead": "Set で重複を取り除く。",
+        "body": "Set は同じ値を 1 つにまとめる。要素数が減っていれば重複がある。"
+      },
+      {
+        "lead": "二重ループは遅い。",
+        "body": "すべての組を比べると O(N²) で、N = 10⁵ では間に合わない。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "Set への追加はほぼ定数時間。"
+      }
+    ]
+  }
+}

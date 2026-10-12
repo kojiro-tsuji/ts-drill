@@ -1,0 +1,48 @@
+{
+  "id": "tree-diameter",
+  "title": "木の直径",
+  "difficulty": 4,
+  "statement": "頂点に 1 から N の番号が付いた木（閉路のない連結な無向グラフ）が与えられる。i 番目の辺は頂点 Ui と Vi を結ぶ。2 頂点間の距離を、その間の経路に含まれる辺の本数とするとき、距離の最大値（木の直径）を出力せよ。",
+  "constraints": [
+    "2 ≤ N ≤ 2 × 10⁵",
+    "1 ≤ Ui, Vi ≤ N",
+    "与えられるグラフは木",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nU1 V1\n…\nU(N−1) V(N−1)",
+  "outputFormat": "直径を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5\n1 2\n2 3\n3 4\n2 5",
+      "output": "3"
+    },
+    {
+      "input": "2\n1 2",
+      "output": "1"
+    },
+    {
+      "input": "6\n1 2\n1 3\n1 4\n4 5\n5 6",
+      "output": "4"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(lines[0]);\nconst graph: number[][] = Array.from({ length: n + 1 }, () => []);\nfor (let i = 1; i < n; i++) {\n  const [u, v] = lines[i].split(\" \").map(Number);\n  graph[u].push(v);\n  graph[v].push(u);\n}\n\n// start から各頂点への距離を BFS で求める\nfunction bfs(start: number): Int32Array {\n  const dist = new Int32Array(n + 1).fill(-1);\n  dist[start] = 0;\n  const queue = [start];\n  for (let head = 0; head < queue.length; head++) {\n    const v = queue[head];\n    for (const next of graph[v]) {\n      if (dist[next] !== -1) continue;\n      dist[next] = dist[v] + 1;\n      queue.push(next);\n    }\n  }\n  return dist;\n}\n\n// 1 から最も遠い頂点 far を求め、far から最も遠い距離が直径\nconst d1 = bfs(1);\nlet far = 1;\nfor (let v = 1; v <= n; v++) if (d1[v] > d1[far]) far = v;\nconst d2 = bfs(far);\nlet diameter = 0;\nfor (let v = 1; v <= n; v++) diameter = Math.max(diameter, d2[v]);\nconsole.log(diameter);\n",
+    "explanation": [
+      {
+        "lead": "BFS を 2 回行う。",
+        "body": "任意の頂点から最も遠い頂点は、直径の端点の 1 つになる。そこから最も遠い頂点までの距離が直径。"
+      },
+      {
+        "lead": "全頂点から BFS する必要はない。",
+        "body": "全頂点から調べると O(N²) で間に合わない。この性質を使えば 2 回で済む。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "木なので辺は N − 1 本。各 BFS は O(N)。"
+      }
+    ]
+  }
+}

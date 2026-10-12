@@ -1,0 +1,46 @@
+{
+  "id": "multiplication-row",
+  "title": "N の段",
+  "difficulty": 1,
+  "statement": "整数 N が与えられる。N × 1, N × 2, …, N × 9 を空白区切りで 1 行に出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 1000",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N",
+  "outputFormat": "9 個の積を空白区切りで 1 行に出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3",
+      "output": "3 6 9 12 15 18 21 24 27"
+    },
+    {
+      "input": "1",
+      "output": "1 2 3 4 5 6 7 8 9"
+    },
+    {
+      "input": "1000",
+      "output": "1000 2000 3000 4000 5000 6000 7000 8000 9000"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst n = Number(readFileSync(0, \"utf8\").trim());\n\n// 長さ 9 の配列を作り、添字から 1〜9 を作る\nconst row = Array.from({ length: 9 }, (_, i) => n * (i + 1));\nconsole.log(row.join(\" \"));\n",
+    "explanation": [
+      {
+        "lead": "Array.from で 9 個の値を作る。",
+        "body": "{ length: 9 } を渡すと、添字 i = 0〜8 で値を作れる。i + 1 を掛ければ N の段になる。"
+      },
+      {
+        "lead": "join で空白区切りにする。",
+        "body": "配列を join(\" \") でつなげて 1 行で出力する。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "常に 9 個の積を作るだけ。"
+      }
+    ]
+  }
+}

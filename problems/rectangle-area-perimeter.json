@@ -1,0 +1,46 @@
+{
+  "id": "rectangle-area-perimeter",
+  "title": "長方形の面積と周の長さ",
+  "difficulty": 1,
+  "statement": "縦 H、横 W の長方形がある。この長方形の面積と周の長さを、この順に空白区切りで出力せよ。",
+  "constraints": [
+    "1 ≤ H, W ≤ 10⁴",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "H W",
+  "outputFormat": "面積と周の長さを空白区切りで 1 行に出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 5",
+      "output": "15 16"
+    },
+    {
+      "input": "1 1",
+      "output": "1 4"
+    },
+    {
+      "input": "10000 10000",
+      "output": "100000000 40000"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [h, w] = readFileSync(0, \"utf8\").trim().split(\" \").map(Number);\n\nconst area = h * w;\nconst perimeter = 2 * (h + w);\nconsole.log(area + \" \" + perimeter);\n",
+    "explanation": [
+      {
+        "lead": "面積は縦 × 横。",
+        "body": "h * w で求まる。"
+      },
+      {
+        "lead": "周の長さは 2 × (縦 + 横)。",
+        "body": "向かい合う辺が 2 組あるので、縦と横の和を 2 倍する。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "式を 1 回ずつ計算するだけ。"
+      }
+    ]
+  }
+}

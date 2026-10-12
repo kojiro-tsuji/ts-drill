@@ -1,0 +1,46 @@
+{
+  "id": "to-binary",
+  "title": "2 進数に変換",
+  "difficulty": 2,
+  "statement": "0 以上の整数 N が与えられる。N を 2 進数で表した文字列を出力せよ。ただし、先頭に余分な 0 を付けないこと（N = 0 のときは 0 を出力する）。",
+  "constraints": [
+    "0 ≤ N ≤ 10¹⁸",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N",
+  "outputFormat": "2 進数表記を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "10",
+      "output": "1010"
+    },
+    {
+      "input": "0",
+      "output": "0"
+    },
+    {
+      "input": "1000000000000000000",
+      "output": "110111100000101101101011001110100111011001000000000000000000"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nlet n = BigInt(readFileSync(0, \"utf8\").trim());\nif (n === 0n) {\n  console.log(\"0\");\n} else {\n  // 2 で割った余りを下の桁から集める\n  const bits: string[] = [];\n  while (n > 0n) {\n    bits.push((n % 2n).toString());\n    n /= 2n;\n  }\n  console.log(bits.reverse().join(\"\"));\n}\n",
+    "explanation": [
+      {
+        "lead": "2 で割った余りが下の桁になる。",
+        "body": "余りを集めて N を 2 で割ることを繰り返すと、下の桁から順に 2 進数の各桁が得られる。最後に反転する。"
+      },
+      {
+        "lead": "組み込みでも書ける。",
+        "body": "n.toString(2) でも同じ結果になる。仕組みを知っておくと、他の進数にも応用できる。"
+      },
+      {
+        "lead": "計算量は O(log N)。",
+        "body": "桁数ぶん繰り返す。10¹⁸ を正確に扱うため BigInt を使う。"
+      }
+    ]
+  }
+}

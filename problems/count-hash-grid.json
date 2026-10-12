@@ -1,0 +1,46 @@
+{
+  "id": "count-hash-grid",
+  "title": "グリッドの黒マス",
+  "difficulty": 2,
+  "statement": "H 行 W 列のグリッドが与えられる。各マスは # か . である。行ごとに # の個数を数え、最も多い行の番号（上から 1 始まり）と、その個数を空白区切りで出力せよ。最も多い行が複数あるときは、番号が最も小さいものを出力せよ。",
+  "constraints": [
+    "1 ≤ H, W ≤ 1000",
+    "各マスは # または ."
+  ],
+  "inputFormat": "H W\nS1\nS2\n…\nSH",
+  "outputFormat": "行番号と個数を空白区切りで 1 行に出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 4\n#..#\n####\n.#..",
+      "output": "2 4"
+    },
+    {
+      "input": "2 3\n...\n...",
+      "output": "1 0"
+    },
+    {
+      "input": "1 1\n#",
+      "output": "1 1"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [h] = lines[0].split(\" \").map(Number);\n\nlet bestRow = 1;\nlet bestCount = -1;\nfor (let i = 0; i < h; i++) {\n  const row = lines[i + 1];\n  let count = 0;\n  for (const c of row) if (c === \"#\") count++;\n  if (count > bestCount) {\n    bestCount = count;\n    bestRow = i + 1;\n  }\n}\nconsole.log(bestRow + \" \" + bestCount);\n",
+    "explanation": [
+      {
+        "lead": "行ごとに数える。",
+        "body": "各行の文字列を 1 文字ずつ見て、# を数える。"
+      },
+      {
+        "lead": "初期値を −1 にする。",
+        "body": "すべての行が 0 個でも 1 行目が選ばれるよう、最初の比較で必ず更新されるようにする。"
+      },
+      {
+        "lead": "計算量は O(H × W)。",
+        "body": "すべてのマスを 1 回ずつ見る。"
+      }
+    ]
+  }
+}

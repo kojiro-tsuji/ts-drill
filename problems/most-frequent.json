@@ -1,0 +1,47 @@
+{
+  "id": "most-frequent",
+  "title": "最頻値",
+  "difficulty": 2,
+  "statement": "N 個の整数 A1, A2, …, AN が与えられる。最も多く現れる値を出力せよ。そのような値が複数あるときは、最も小さいものを出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁵",
+    "−10⁹ ≤ Ai ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nA1 A2 … AN",
+  "outputFormat": "最頻値を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "6\n3 1 3 2 1 3",
+      "output": "3"
+    },
+    {
+      "input": "4\n5 4 5 4",
+      "output": "4"
+    },
+    {
+      "input": "1\n-7",
+      "output": "-7"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\nconst count = new Map<number, number>();\nfor (const x of a) count.set(x, (count.get(x) ?? 0) + 1);\n\nlet best = 0;\nlet bestCount = 0;\nfor (const [value, c] of count) {\n  // 回数が多い、または同じ回数でより小さい値なら更新する\n  if (c > bestCount || (c === bestCount && value < best)) {\n    best = value;\n    bestCount = c;\n  }\n}\nconsole.log(best);\n",
+    "explanation": [
+      {
+        "lead": "Map で出現回数を数える。",
+        "body": "値をキー、回数を値にした Map を作る。count.get(x) ?? 0 で、まだないときは 0 として扱える。"
+      },
+      {
+        "lead": "同点のときの決め方を条件に入れる。",
+        "body": "回数が同じなら、値が小さいほうを選ぶ。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "数える走査と、Map を見る走査の 2 回で済む。"
+      }
+    ]
+  }
+}

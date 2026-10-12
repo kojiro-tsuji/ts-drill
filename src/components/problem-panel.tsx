@@ -1,4 +1,4 @@
-import type { Problem } from "@/lib/problem";
+import { difficultyLabel, type Problem } from "@/lib/problem";
 import { CodeBox, Panel, PanelHeader, PanelLabel, SectionTitle } from "./ui";
 
 export function ProblemPanel({ problem }: { problem: Problem }) {
@@ -6,7 +6,9 @@ export function ProblemPanel({ problem }: { problem: Problem }) {
     <Panel className="flex-[1_1_380px] max-sm:h-auto">
       <PanelHeader>
         <PanelLabel>問題</PanelLabel>
-        <span className="font-mono text-xs text-muted">{problem.timeLimitMs / 1000} sec</span>
+        <span className="text-xs text-muted">
+          {difficultyLabel(problem.difficulty)} · <span className="font-mono">{problem.timeLimitMs / 1000} sec</span>
+        </span>
       </PanelHeader>
       <div className="flex flex-1 flex-col gap-[22px] overflow-auto px-[22px] pt-[22px] pb-[26px]">
         <h1 className="m-0 text-2xl leading-[1.35] font-bold">{problem.title}</h1>

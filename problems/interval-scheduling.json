@@ -1,0 +1,47 @@
+{
+  "id": "interval-scheduling",
+  "title": "区間スケジューリング",
+  "difficulty": 3,
+  "statement": "N 個の予定があり、i 番目の予定は時刻 Si に始まり時刻 Ti に終わる。重ならないように予定を選ぶとき、選べる予定の最大数を出力せよ。ある予定の終了時刻と別の予定の開始時刻が等しい場合は、重ならないとみなす。",
+  "constraints": [
+    "1 ≤ N ≤ 2 × 10⁵",
+    "0 ≤ Si < Ti ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nS1 T1\n…\nSN TN",
+  "outputFormat": "最大数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "4\n1 3\n2 5\n4 7\n6 8",
+      "output": "2"
+    },
+    {
+      "input": "3\n0 10\n1 2\n3 4",
+      "output": "2"
+    },
+    {
+      "input": "2\n1 2\n2 3",
+      "output": "2"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(lines[0]);\nconst intervals = lines.slice(1, n + 1).map((l) => l.split(\" \").map(Number));\n\n// 終了時刻の早い順に見て、選べるものは選ぶ\nintervals.sort((p, q) => p[1] - q[1]);\nlet count = 0;\nlet lastEnd = -Infinity;\nfor (const [s, t] of intervals) {\n  if (s >= lastEnd) {\n    count++;\n    lastEnd = t;\n  }\n}\nconsole.log(count);\n",
+    "explanation": [
+      {
+        "lead": "終了時刻が早い予定から選ぶ。",
+        "body": "早く終わる予定を選ぶほど、後に残る時間が長くなる。この貪欲法が最適になることが知られている。"
+      },
+      {
+        "lead": "開始時刻順に選ぶと誤る。",
+        "body": "長い予定を先に選ぶと、その間の短い予定をまとめて逃してしまう。"
+      },
+      {
+        "lead": "計算量は O(N log N)。",
+        "body": "並べ替えが支配的で、選ぶ処理は 1 回の走査で済む。"
+      }
+    ]
+  }
+}

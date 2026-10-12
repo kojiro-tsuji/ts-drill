@@ -1,0 +1,49 @@
+{
+  "id": "coin-change-ways",
+  "title": "両替の方法",
+  "difficulty": 4,
+  "statement": "N 種類の硬貨があり、i 種類目の額面は Ci 円である。各種類の硬貨は何枚でも使える。ちょうど X 円を支払う硬貨の組み合わせの数を 10⁹ + 7 で割った余りを出力せよ。使う枚数の内訳が同じものは、使う順番が違っても 1 通りと数える。",
+  "constraints": [
+    "1 ≤ N ≤ 100",
+    "1 ≤ X ≤ 10⁵",
+    "1 ≤ Ci ≤ 10⁵",
+    "Ci はすべて異なる",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N X\nC1 C2 … CN",
+  "outputFormat": "組み合わせの数を 10⁹ + 7 で割った余りを 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 5\n1 2 5",
+      "output": "4"
+    },
+    {
+      "input": "1 3\n2",
+      "output": "0"
+    },
+    {
+      "input": "2 10\n1 10",
+      "output": "2"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [, x] = first.split(\" \").map(Number);\nconst coins = second.split(\" \").map(Number);\nconst MOD = 1_000_000_007;\n\n// ways[s] = s 円の作り方の数。硬貨の種類を外側のループにする\nconst ways = new Array(x + 1).fill(0);\nways[0] = 1;\nfor (const c of coins) {\n  for (let s = c; s <= x; s++) {\n    ways[s] = (ways[s] + ways[s - c]) % MOD;\n  }\n}\nconsole.log(ways[x]);\n",
+    "explanation": [
+      {
+        "lead": "硬貨の種類を外側のループにする。",
+        "body": "種類ごとに「この硬貨を何枚使うか」を順に決めていく形になるので、使う順番の違いを重複して数えない。"
+      },
+      {
+        "lead": "金額は小さいほうから回す。",
+        "body": "同じ種類の硬貨を何枚でも使えるので、更新したばかりの ways[s − c] を使ってよい（0-1 ナップサックとは逆）。"
+      },
+      {
+        "lead": "計算量は O(NX)。",
+        "body": "足すたびに余りを取れば、値は 2 × (10⁹ + 7) 未満に収まり、Number で正確に扱える。"
+      }
+    ]
+  }
+}

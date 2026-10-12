@@ -1,0 +1,48 @@
+{
+  "id": "cut-ropes",
+  "title": "ロープの切り分け",
+  "difficulty": 3,
+  "statement": "N 本のロープがあり、i 番目の長さは Li である。ロープを切って、同じ長さ X（正の整数）のロープを K 本以上作りたい。各ロープから長さ X の部分を何本でも切り出せるが、ロープどうしをつなげることはできない。作れる X の最大値を出力せよ。K 本作れる X が存在しないときは 0 を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 2 × 10⁵",
+    "1 ≤ K ≤ 10⁹",
+    "1 ≤ Li ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N K\nL1 L2 … LN",
+  "outputFormat": "X の最大値を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 5\n10 15 7",
+      "output": "5"
+    },
+    {
+      "input": "2 100\n3 4",
+      "output": "0"
+    },
+    {
+      "input": "1 1\n1000000000",
+      "output": "1000000000"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [, k] = first.split(\" \").map(Number);\nconst ropes = second.split(\" \").map(Number);\n\n// 長さ x で K 本以上作れるか\nconst can = (x: number): boolean => {\n  let pieces = 0;\n  for (const len of ropes) pieces += Math.floor(len / x);\n  return pieces >= k;\n};\n\n// 答えを二分探索する: lo は作れる長さ、hi は作れない長さ\nlet lo = 0;\nlet hi = 1_000_000_001;\nwhile (hi - lo > 1) {\n  const mid = Math.floor((lo + hi) / 2);\n  if (can(mid)) lo = mid;\n  else hi = mid;\n}\nconsole.log(lo);\n",
+    "explanation": [
+      {
+        "lead": "「長さ X で作れるか」は単調。",
+        "body": "X で K 本作れるなら、それより短い長さでも必ず作れる。この性質があれば、答えを二分探索できる。"
+      },
+      {
+        "lead": "作れる側と作れない側の境目を探す。",
+        "body": "lo を作れる長さ（0 は作れるとみなす）、hi を作れない長さとして、差が 1 になるまで狭める。最後の lo が答え。"
+      },
+      {
+        "lead": "計算量は O(N log(最大長))。",
+        "body": "判定 1 回が O(N) で、二分探索は約 30 回。"
+      }
+    ]
+  }
+}

@@ -1,22 +1,26 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { problems } from "@/lib/problems";
+import type { Difficulty, Problem } from "@/lib/problem";
 import { judge, warmUpCompiler } from "@/lib/runner/judge";
 import { EditorPanel, type RunState } from "./editor-panel";
-import { Header } from "./header";
+import { Header, type DifficultyFilter } from "./header";
 import { ProblemPanel } from "./problem-panel";
 import { SolutionPanel } from "./solution-panel";
 
-function randomIndex(exclude?: number): number {
-  const candidates = problems.map((_, i) => i).filter((i) => i !== exclude);
-  if (candidates.length === 0) return exclude ?? 0;
+function pickRandom(pool: Problem[], exclude?: Problem): Problem {
+  const candidates = pool.filter((p) => p !== exclude);
+  if (candidates.length === 0) return exclude ?? pool[0];
   return candidates[Math.floor(Math.random() * candidates.length)];
 }
 
-export default function TsdrillApp() {
-  const [index, setIndex] = useState(() => randomIndex());
-  const problem = problems[index];
+function matches(problem: Problem, filter: DifficultyFilter): boolean {
+  return filter === "all" || problem.difficulty === filter;
+}
+
+export default function TsdrillApp({ problems }: { problems: Problem[] }) {
+  const [difficulty, setDifficulty] = useState<DifficultyFilter>("all");
+  const [problem, setProblem] = useState(() => pickRandom(problems));
   const [code, setCode] = useState(problem.starterCode);
   const [run, setRun] = useState<RunState>({ kind: "idle" });
   const [hasRun, setHasRun] = useState(false);
@@ -26,14 +30,23 @@ export default function TsdrillApp() {
 
   useEffect(() => warmUpCompiler(), []);
 
-  const nextProblem = () => {
-    const next = randomIndex(index);
+  const showProblem = (next: Problem) => {
     runId.current++;
-    setIndex(next);
-    setCode(problems[next].starterCode);
+    setProblem(next);
+    setCode(next.starterCode);
     setRun({ kind: "idle" });
     setHasRun(false);
     setAnswerShown(false);
+  };
+
+  const nextProblem = () => {
+    showProblem(pickRandom(problems.filter((p) => matches(p, difficulty)), problem));
+  };
+
+  // 難易度を変えたとき、今の問題が条件に合わなければ合う問題に切り替える
+  const changeDifficulty = (filter: DifficultyFilter) => {
+    setDifficulty(filter);
+    if (!matches(problem, filter)) showProblem(pickRandom(problems.filter((p) => matches(p, filter))));
   };
 
   const execute = async () => {
@@ -52,9 +65,18 @@ export default function TsdrillApp() {
     if (id === runId.current) setRun({ kind: "done", result });
   };
 
+  const counts = new Map<Difficulty, number>();
+  for (const p of problems) counts.set(p.difficulty, (counts.get(p.difficulty) ?? 0) + 1);
+
   return (
     <div className="flex min-h-dvh flex-col bg-page text-text">
-      <Header onNext={nextProblem} />
+      <Header
+        difficulty={difficulty}
+        counts={counts}
+        total={problems.length}
+        onDifficultyChange={changeDifficulty}
+        onNext={nextProblem}
+      />
       <main className="flex flex-1 flex-wrap gap-3 p-3">
         <ProblemPanel problem={problem} />
         <EditorPanel

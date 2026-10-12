@@ -1,0 +1,46 @@
+{
+  "id": "score-grade",
+  "title": "成績の評価",
+  "difficulty": 1,
+  "statement": "テストの点数 X が与えられる。X が 80 以上なら A、60 以上 80 未満なら B、40 以上 60 未満なら C、40 未満なら D を出力せよ。",
+  "constraints": [
+    "0 ≤ X ≤ 100",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "X",
+  "outputFormat": "A, B, C, D のいずれかを 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "85",
+      "output": "A"
+    },
+    {
+      "input": "60",
+      "output": "B"
+    },
+    {
+      "input": "39",
+      "output": "D"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst x = Number(readFileSync(0, \"utf8\").trim());\n\nlet grade: string;\nif (x >= 80) grade = \"A\";\nelse if (x >= 60) grade = \"B\";\nelse if (x >= 40) grade = \"C\";\nelse grade = \"D\";\nconsole.log(grade);\n",
+    "explanation": [
+      {
+        "lead": "高い基準から順に調べる。",
+        "body": "上から順に判定すれば、各条件で下限だけを書けばよい。"
+      },
+      {
+        "lead": "境界の値に注意する。",
+        "body": "60 ちょうどは B、40 ちょうどは C。「以上」なので >= を使う。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "比較を最大 3 回するだけ。"
+      }
+    ]
+  }
+}

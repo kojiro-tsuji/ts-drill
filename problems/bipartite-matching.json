@@ -1,0 +1,50 @@
+{
+  "id": "bipartite-matching",
+  "title": "二部マッチング",
+  "difficulty": 5,
+  "statement": "X 人の学生と Y 個の研究室がある。学生 a が研究室 b を希望しているという組が E 個与えられる。各学生は高々 1 つの研究室に、各研究室は高々 1 人の学生に割り当てるとき、希望どおりに割り当てられる組の数の最大値を出力せよ。",
+  "constraints": [
+    "1 ≤ X, Y ≤ 500",
+    "0 ≤ E ≤ 10⁴",
+    "1 ≤ a ≤ X",
+    "1 ≤ b ≤ Y",
+    "同じ組は 2 回以上与えられない",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "X Y E\na1 b1\n…\naE bE",
+  "outputFormat": "最大の組の数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 3 5\n1 1\n1 2\n2 1\n3 2\n3 3",
+      "output": "3"
+    },
+    {
+      "input": "2 2 0",
+      "output": "0"
+    },
+    {
+      "input": "3 1 3\n1 1\n2 1\n3 1",
+      "output": "1"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst tokens = readFileSync(0, \"utf8\").trim().split(/\\s+/).map(Number);\nconst [x, y, e] = tokens;\nconst adj: number[][] = Array.from({ length: x + 1 }, () => []);\nfor (let i = 0; i < e; i++) adj[tokens[3 + 2 * i]].push(tokens[4 + 2 * i]);\n\n// owner[b] = 研究室 b に割り当てられている学生（0 なら空き）\nconst owner = new Int32Array(y + 1);\n\n// 学生 a を割り当てられるか試す。埋まっていれば、今の持ち主を別の研究室へ移せるか再帰的に試す\nfunction assign(a: number, seen: Uint8Array): boolean {\n  for (const b of adj[a]) {\n    if (seen[b]) continue;\n    seen[b] = 1;\n    if (owner[b] === 0 || assign(owner[b], seen)) {\n      owner[b] = a;\n      return true;\n    }\n  }\n  return false;\n}\n\nlet matched = 0;\nfor (let a = 1; a <= x; a++) {\n  if (assign(a, new Uint8Array(y + 1))) matched++;\n}\nconsole.log(matched);\n",
+    "explanation": [
+      {
+        "lead": "増加路を探して割り当てを増やす。",
+        "body": "学生を 1 人ずつ追加する。希望先が埋まっていても、今の持ち主を別の希望先へ移せれば、1 組増やせる。これを再帰的に探す。"
+      },
+      {
+        "lead": "1 回の探索で同じ研究室は 1 度しか見ない。",
+        "body": "seen で訪問済みを管理しないと、同じ研究室を何度も試して無限に回ってしまう。"
+      },
+      {
+        "lead": "計算量は O(X × E)。",
+        "body": "学生ごとに 1 回探索し、各探索は辺を高々 1 回ずつ見る。入力の空白や改行の位置に依存しないよう、全体をまとめて数値の列として読んでいる。"
+      }
+    ]
+  }
+}

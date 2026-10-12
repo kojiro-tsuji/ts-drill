@@ -1,0 +1,48 @@
+{
+  "id": "range-sum-queries",
+  "title": "区間和クエリ",
+  "difficulty": 3,
+  "statement": "長さ N の整数列 A と、Q 個のクエリが与えられる。i 番目のクエリでは整数 L, R が与えられるので、A(L) + A(L+1) + … + A(R) を出力せよ。",
+  "constraints": [
+    "1 ≤ N, Q ≤ 2 × 10⁵",
+    "−10⁹ ≤ Ai ≤ 10⁹",
+    "1 ≤ L ≤ R ≤ N",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N Q\nA1 A2 … AN\nL1 R1\n…\nLQ RQ",
+  "outputFormat": "Q 行出力。i 行目に i 番目のクエリの答え",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5 3\n1 2 3 4 5\n1 3\n2 5\n4 4",
+      "output": "6\n14\n4"
+    },
+    {
+      "input": "3 2\n-1 -2 -3\n1 3\n2 2",
+      "output": "-6\n-2"
+    },
+    {
+      "input": "1 1\n1000000000\n1 1",
+      "output": "1000000000"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, q] = lines[0].split(\" \").map(Number);\nconst a = lines[1].split(\" \").map(Number);\n\n// prefix[i] = A1 + … + Ai（prefix[0] = 0）\nconst prefix = new Array(n + 1).fill(0);\nfor (let i = 0; i < n; i++) prefix[i + 1] = prefix[i] + a[i];\n\nconst out: number[] = [];\nfor (let i = 0; i < q; i++) {\n  const [l, r] = lines[2 + i].split(\" \").map(Number);\n  out.push(prefix[r] - prefix[l - 1]);\n}\nconsole.log(out.join(\"\\n\"));\n",
+    "explanation": [
+      {
+        "lead": "累積和を前もって作る。",
+        "body": "prefix[i] に先頭から i 個の和を入れておくと、区間 [L, R] の和は prefix[R] − prefix[L−1] の引き算 1 回で求まる。"
+      },
+      {
+        "lead": "先頭に 0 を置く。",
+        "body": "prefix[0] = 0 にしておくと、L = 1 のときも同じ式で扱える。"
+      },
+      {
+        "lead": "計算量は O(N + Q)。",
+        "body": "毎回足し直すと O(NQ) で間に合わない。和の絶対値は最大 2 × 10¹⁴ で、Number で正確に扱える。"
+      }
+    ]
+  }
+}

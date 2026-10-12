@@ -1,0 +1,46 @@
+{
+  "id": "edit-distance",
+  "title": "編集距離",
+  "difficulty": 4,
+  "statement": "英小文字からなる文字列 S, T が与えられる。S に対して「1 文字挿入する」「1 文字削除する」「1 文字を別の文字に置き換える」のいずれかの操作を繰り返して T にするとき、必要な操作の最小回数を出力せよ。",
+  "constraints": [
+    "1 ≤ |S|, |T| ≤ 3000",
+    "S, T は英小文字のみ"
+  ],
+  "inputFormat": "S\nT",
+  "outputFormat": "最小回数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "kitten\nsitting",
+      "output": "3"
+    },
+    {
+      "input": "abc\nabc",
+      "output": "0"
+    },
+    {
+      "input": "a\nbcd",
+      "output": "3"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [s, t] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = s.length;\nconst m = t.length;\n\n// dp[i][j] = S の先頭 i 文字を T の先頭 j 文字にする最小回数。2 行だけ持つ\nlet prev = new Int32Array(m + 1);\nlet cur = new Int32Array(m + 1);\nfor (let j = 0; j <= m; j++) prev[j] = j; // 空文字列から j 文字を挿入\nfor (let i = 1; i <= n; i++) {\n  cur[0] = i; // i 文字を削除して空文字列に\n  for (let j = 1; j <= m; j++) {\n    const replace = prev[j - 1] + (s[i - 1] === t[j - 1] ? 0 : 1);\n    cur[j] = Math.min(replace, prev[j] + 1, cur[j - 1] + 1);\n  }\n  [prev, cur] = [cur, prev];\n}\nconsole.log(prev[m]);\n",
+    "explanation": [
+      {
+        "lead": "末尾の操作で場合分けする。",
+        "body": "最後の操作は「末尾を置き換える（同じ文字なら 0 回）」「S の末尾を削除する」「T の末尾の文字を挿入する」のどれか。それぞれ dp[i−1][j−1], dp[i−1][j], dp[i][j−1] から来る。"
+      },
+      {
+        "lead": "端の値を初期化する。",
+        "body": "空文字列から j 文字にするには j 回の挿入、i 文字を空にするには i 回の削除が必要。"
+      },
+      {
+        "lead": "計算量は O(|S| × |T|)。",
+        "body": "直前の行しか使わないので、2 行だけ持てばメモリも節約できる。"
+      }
+    ]
+  }
+}

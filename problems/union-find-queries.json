@@ -1,0 +1,47 @@
+{
+  "id": "union-find-queries",
+  "title": "連結判定クエリ",
+  "difficulty": 4,
+  "statement": "頂点に 1 から N の番号が付いたグラフがあり、最初は辺がない。Q 個のクエリを順に処理せよ。クエリ 0 u v では頂点 u と v を辺で結ぶ。クエリ 1 u v では、u と v が辺をたどって行き来できるなら Yes、できないなら No を出力する。",
+  "constraints": [
+    "1 ≤ N, Q ≤ 2 × 10⁵",
+    "1 ≤ u, v ≤ N",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N Q\nt1 u1 v1\n…\ntQ uQ vQ",
+  "outputFormat": "種類 1 のクエリごとに 1 行出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "4 5\n1 1 2\n0 1 2\n0 3 4\n1 1 2\n1 2 4",
+      "output": "No\nYes\nNo"
+    },
+    {
+      "input": "2 1\n1 1 1",
+      "output": "Yes"
+    },
+    {
+      "input": "5 4\n0 1 2\n0 2 3\n0 4 5\n1 1 3",
+      "output": "Yes"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, q] = lines[0].split(\" \").map(Number);\n\n// parent[v] が負なら v は根で、-parent[v] はその集合の大きさ\nconst parent = new Int32Array(n + 1).fill(-1);\nfunction find(v: number): number {\n  while (parent[v] >= 0) {\n    if (parent[parent[v]] >= 0) parent[v] = parent[parent[v]]; // 経路を短くする\n    v = parent[v];\n  }\n  return v;\n}\nfunction unite(a: number, b: number): void {\n  a = find(a);\n  b = find(b);\n  if (a === b) return;\n  if (parent[a] > parent[b]) [a, b] = [b, a]; // 大きいほうに小さいほうをつなぐ\n  parent[a] += parent[b];\n  parent[b] = a;\n}\n\nconst out: string[] = [];\nfor (let i = 1; i <= q; i++) {\n  const [t, u, v] = lines[i].split(\" \").map(Number);\n  if (t === 0) unite(u, v);\n  else out.push(find(u) === find(v) ? \"Yes\" : \"No\");\n}\nconsole.log(out.join(\"\\n\"));\n",
+    "explanation": [
+      {
+        "lead": "Union-Find で連結な集合を管理する。",
+        "body": "各集合を木で表し、根を代表とする。2 頂点の根が同じなら同じ集合にいる。"
+      },
+      {
+        "lead": "木を浅く保つ工夫を 2 つ入れる。",
+        "body": "大きい集合の根に小さい集合をつなぐ（union by size）。根を探すときに途中の頂点をより上につなぎ直す（経路圧縮）。"
+      },
+      {
+        "lead": "計算量はほぼ O(Q)。",
+        "body": "工夫を入れると、1 回の操作はほぼ定数時間になる。どのクエリでも BFS をやり直すと間に合わない。"
+      }
+    ]
+  }
+}

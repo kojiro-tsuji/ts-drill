@@ -1,0 +1,49 @@
+{
+  "id": "knapsack-01",
+  "title": "ナップサック問題",
+  "difficulty": 4,
+  "statement": "N 個の品物があり、i 番目の品物の重さは Wi、価値は Vi である。重さの合計が W 以下になるようにいくつかの品物を選ぶ（各品物は 1 回まで）。選んだ品物の価値の合計の最大値を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 100",
+    "1 ≤ W ≤ 10⁵",
+    "1 ≤ Wi ≤ W",
+    "1 ≤ Vi ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N W\nW1 V1\n…\nWN VN",
+  "outputFormat": "価値の合計の最大値を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 8\n3 30\n4 50\n5 60",
+      "output": "90"
+    },
+    {
+      "input": "1 5\n6 100",
+      "output": "0"
+    },
+    {
+      "input": "4 5\n4 5\n2 3\n2 3\n1 1",
+      "output": "7"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, cap] = lines[0].split(\" \").map(Number);\n\n// dp[w] = 重さの合計が w 以下のときの価値の最大値\nconst dp = new Array(cap + 1).fill(0);\nfor (let i = 1; i <= n; i++) {\n  const [wi, vi] = lines[i].split(\" \").map(Number);\n  // 重い側から更新すると、同じ品物を 2 回使わずに済む\n  for (let w = cap; w >= wi; w--) {\n    dp[w] = Math.max(dp[w], dp[w - wi] + vi);\n  }\n}\nconsole.log(dp[cap]);\n",
+    "explanation": [
+      {
+        "lead": "重さを状態にした動的計画法。",
+        "body": "dp[w] を「重さ w 以下で達成できる価値の最大値」とし、品物を 1 つずつ加えながら更新する。"
+      },
+      {
+        "lead": "w を大きいほうから回す。",
+        "body": "小さいほうから回すと、同じ品物を入れた直後の dp[w − wi] を再び使ってしまい、品物を何度も選べることになる。"
+      },
+      {
+        "lead": "計算量は O(NW)。",
+        "body": "100 × 10⁵ = 10⁷ 回程度。価値の合計は最大 10¹¹ で、Number で正確に扱える。"
+      }
+    ]
+  }
+}

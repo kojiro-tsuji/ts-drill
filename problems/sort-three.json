@@ -1,0 +1,46 @@
+{
+  "id": "sort-three",
+  "title": "3 つの数の並べ替え",
+  "difficulty": 1,
+  "statement": "整数 A, B, C が与えられる。これらを小さい順に並べ、空白区切りで出力せよ。",
+  "constraints": [
+    "−10⁹ ≤ A, B, C ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "A B C",
+  "outputFormat": "昇順に並べた 3 つの数を空白区切りで 1 行に出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3 1 2",
+      "output": "1 2 3"
+    },
+    {
+      "input": "-5 10 -5",
+      "output": "-5 -5 10"
+    },
+    {
+      "input": "100 9 10",
+      "output": "9 10 100"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst nums = readFileSync(0, \"utf8\").trim().split(\" \").map(Number);\n\n// 比較関数を渡さないと文字列として並ぶ（\"10\" < \"9\" になる）\nnums.sort((x, y) => x - y);\nconsole.log(nums.join(\" \"));\n",
+    "explanation": [
+      {
+        "lead": "sort には比較関数を渡す。",
+        "body": "比較関数なしの sort は要素を文字列として比べるので、10 が 9 より前に来てしまう。"
+      },
+      {
+        "lead": "x - y で昇順になる。",
+        "body": "比較関数が負を返すと x が前、正を返すと y が前になる。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "3 要素の並べ替えだけ。"
+      }
+    ]
+  }
+}

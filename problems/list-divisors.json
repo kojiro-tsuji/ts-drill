@@ -1,0 +1,46 @@
+{
+  "id": "list-divisors",
+  "title": "約数の列挙",
+  "difficulty": 2,
+  "statement": "正の整数 N が与えられる。N の正の約数をすべて、小さい順に空白区切りで出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10¹²",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N",
+  "outputFormat": "約数を小さい順に空白区切りで 1 行に出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "12",
+      "output": "1 2 3 4 6 12"
+    },
+    {
+      "input": "1",
+      "output": "1"
+    },
+    {
+      "input": "49",
+      "output": "1 7 49"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst n = Number(readFileSync(0, \"utf8\").trim());\n\nconst small: number[] = [];\nconst large: number[] = [];\nfor (let d = 1; d * d <= n; d++) {\n  if (n % d !== 0) continue;\n  small.push(d);\n  // 対になる約数（平方数のときは同じ値を 2 回入れない）\n  if (d !== n / d) large.push(n / d);\n}\nconsole.log([...small, ...large.reverse()].join(\" \"));\n",
+    "explanation": [
+      {
+        "lead": "約数は d と N/d の組で見つかる。",
+        "body": "d が √N 以下の約数なら、N/d は √N 以上の約数になる。√N まで調べれば全部見つかる。"
+      },
+      {
+        "lead": "小さい側と大きい側を別に溜める。",
+        "body": "小さい側は昇順、大きい側は降順に見つかるので、大きい側を反転してつなげれば全体が昇順になる。"
+      },
+      {
+        "lead": "計算量は O(√N)。",
+        "body": "平方数のときは d と N/d が同じになるので、重複させないよう注意する。"
+      }
+    ]
+  }
+}

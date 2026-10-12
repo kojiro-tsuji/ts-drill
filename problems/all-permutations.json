@@ -1,0 +1,46 @@
+{
+  "id": "all-permutations",
+  "title": "順列の列挙",
+  "difficulty": 3,
+  "statement": "整数 N が与えられる。1, 2, …, N を並べ替えた順列をすべて、辞書順に 1 行ずつ出力せよ。各行では、順列の要素を空白区切りで出力する。",
+  "constraints": [
+    "1 ≤ N ≤ 8",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N",
+  "outputFormat": "N! 行出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3",
+      "output": "1 2 3\n1 3 2\n2 1 3\n2 3 1\n3 1 2\n3 2 1"
+    },
+    {
+      "input": "1",
+      "output": "1"
+    },
+    {
+      "input": "2",
+      "output": "1 2\n2 1"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst n = Number(readFileSync(0, \"utf8\").trim());\n\nconst out: string[] = [];\nconst used = new Array(n + 1).fill(false);\nconst current: number[] = [];\n\n// 小さい数から順に試すと、辞書順に列挙される\nfunction build(): void {\n  if (current.length === n) {\n    out.push(current.join(\" \"));\n    return;\n  }\n  for (let v = 1; v <= n; v++) {\n    if (used[v]) continue;\n    used[v] = true;\n    current.push(v);\n    build();\n    current.pop();\n    used[v] = false;\n  }\n}\nbuild();\nconsole.log(out.join(\"\\n\"));\n",
+    "explanation": [
+      {
+        "lead": "再帰で 1 つずつ並べる。",
+        "body": "まだ使っていない数を 1 つ選んで末尾に置き、残りを再帰的に並べる。戻ってきたら選択を取り消す（バックトラック）。"
+      },
+      {
+        "lead": "小さい数から試すと辞書順になる。",
+        "body": "先頭が小さいものから順に作られるので、並べ替えなくても辞書順で出力できる。"
+      },
+      {
+        "lead": "計算量は O(N! × N)。",
+        "body": "N = 8 で 40320 通り。再帰の深さは N なので問題ない。"
+      }
+    ]
+  }
+}

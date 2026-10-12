@@ -1,0 +1,47 @@
+{
+  "id": "subset-sum-count",
+  "title": "部分和の数え上げ",
+  "difficulty": 3,
+  "statement": "N 個の整数 A1, A2, …, AN と整数 K が与えられる。いくつか（0 個でもよい）の要素を選んで、その和をちょうど K にする選び方の数を出力せよ。同じ値の要素でも、添字が違えば区別する。",
+  "constraints": [
+    "1 ≤ N ≤ 20",
+    "−10⁹ ≤ Ai, K ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N K\nA1 A2 … AN",
+  "outputFormat": "選び方の数を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "4 5\n1 2 3 4",
+      "output": "2"
+    },
+    {
+      "input": "3 0\n1 -1 2",
+      "output": "2"
+    },
+    {
+      "input": "2 7\n1 2",
+      "output": "0"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, k] = first.split(\" \").map(Number);\nconst a = second.split(\" \").map(Number);\n\n// mask の i ビット目が 1 なら i 番目を選ぶ。2^N 通りをすべて試す\nlet count = 0;\nfor (let mask = 0; mask < 1 << n; mask++) {\n  let sum = 0;\n  for (let i = 0; i < n; i++) {\n    if (mask & (1 << i)) sum += a[i];\n  }\n  if (sum === k) count++;\n}\nconsole.log(count);\n",
+    "explanation": [
+      {
+        "lead": "選び方を整数のビットで表す（bit 全探索）。",
+        "body": "0 から 2^N − 1 までの整数 mask の各ビットを「選ぶ・選ばない」に対応させれば、すべての選び方を漏れなく試せる。"
+      },
+      {
+        "lead": "空の選び方も含まれる。",
+        "body": "mask = 0 は何も選ばない場合で、和は 0。K = 0 のときはこれも 1 通りに数える。"
+      },
+      {
+        "lead": "計算量は O(2^N × N)。",
+        "body": "N = 20 で約 2000 万回。この程度なら間に合う。"
+      }
+    ]
+  }
+}

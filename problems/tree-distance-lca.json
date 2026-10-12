@@ -1,0 +1,49 @@
+{
+  "id": "tree-distance-lca",
+  "title": "木の 2 頂点間の距離",
+  "difficulty": 5,
+  "statement": "頂点に 1 から N の番号が付いた木が与えられる。i 番目の辺は頂点 Ui と Vi を結ぶ。Q 個のクエリが与えられ、各クエリでは頂点 a, b の間の距離（経路に含まれる辺の本数）を出力せよ。",
+  "constraints": [
+    "2 ≤ N ≤ 2 × 10⁵",
+    "1 ≤ Q ≤ 2 × 10⁵",
+    "与えられるグラフは木",
+    "1 ≤ a, b ≤ N",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nU1 V1\n…\nU(N−1) V(N−1)\nQ\na1 b1\n…\naQ bQ",
+  "outputFormat": "Q 行出力。i 行目に i 番目のクエリの答え",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "5\n1 2\n1 3\n2 4\n2 5\n3\n4 5\n4 3\n1 1",
+      "output": "2\n3\n0"
+    },
+    {
+      "input": "2\n1 2\n1\n2 1",
+      "output": "1"
+    },
+    {
+      "input": "6\n1 2\n2 3\n3 4\n4 5\n5 6\n2\n1 6\n3 5",
+      "output": "5\n2"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(lines[0]);\nconst graph: number[][] = Array.from({ length: n + 1 }, () => []);\nfor (let i = 1; i < n; i++) {\n  const [u, v] = lines[i].split(\" \").map(Number);\n  graph[u].push(v);\n  graph[v].push(u);\n}\n\n// 頂点 1 を根として BFS で親と深さを求める\nconst LOG = 18; // 2^18 > 2 × 10⁵\nconst depth = new Int32Array(n + 1).fill(-1);\nconst up: Int32Array[] = Array.from({ length: LOG }, () => new Int32Array(n + 1));\ndepth[1] = 0;\nup[0][1] = 1; // 根の親は自分自身にしておく\nconst queue = [1];\nfor (let head = 0; head < queue.length; head++) {\n  const v = queue[head];\n  for (const next of graph[v]) {\n    if (depth[next] !== -1) continue;\n    depth[next] = depth[v] + 1;\n    up[0][next] = v;\n    queue.push(next);\n  }\n}\n// up[k][v] = v から 2^k 個上の祖先（ダブリング）\nfor (let k = 1; k < LOG; k++) {\n  for (let v = 1; v <= n; v++) up[k][v] = up[k - 1][up[k - 1][v]];\n}\n\nfunction lca(a: number, b: number): number {\n  if (depth[a] < depth[b]) [a, b] = [b, a];\n  // 深さをそろえる\n  for (let k = LOG - 1; k >= 0; k--) {\n    if (depth[a] - (1 << k) >= depth[b]) a = up[k][a];\n  }\n  if (a === b) return a;\n  // 祖先が分かれる直前まで、2 つ同時に上げる\n  for (let k = LOG - 1; k >= 0; k--) {\n    if (up[k][a] !== up[k][b]) {\n      a = up[k][a];\n      b = up[k][b];\n    }\n  }\n  return up[0][a];\n}\n\nconst q = Number(lines[n]);\nconst out: number[] = [];\nfor (let i = 0; i < q; i++) {\n  const [a, b] = lines[n + 1 + i].split(\" \").map(Number);\n  out.push(depth[a] + depth[b] - 2 * depth[lca(a, b)]);\n}\nconsole.log(out.join(\"\\n\"));\n",
+    "explanation": [
+      {
+        "lead": "距離は「最小共通祖先（LCA）」で求まる。",
+        "body": "根からの深さを使うと、a と b の距離は depth[a] + depth[b] − 2 × depth[LCA(a, b)]。"
+      },
+      {
+        "lead": "LCA はダブリングで求める。",
+        "body": "各頂点の 2^k 個上の祖先を前計算しておく。まず深さをそろえ、次に祖先が分かれる直前まで 2 頂点を同時に大きく上げる。"
+      },
+      {
+        "lead": "計算量は O((N + Q) log N)。",
+        "body": "クエリごとに BFS すると O(NQ) で間に合わない。"
+      }
+    ]
+  }
+}

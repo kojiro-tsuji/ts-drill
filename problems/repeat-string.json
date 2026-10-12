@@ -1,0 +1,47 @@
+{
+  "id": "repeat-string",
+  "title": "文字列のくり返し",
+  "difficulty": 1,
+  "statement": "整数 N と英小文字からなる文字列 S が与えられる。S を N 回続けてつなげた文字列を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 100",
+    "1 ≤ |S| ≤ 100",
+    "S は英小文字のみ"
+  ],
+  "inputFormat": "N\nS",
+  "outputFormat": "つなげた文字列を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3\nab",
+      "output": "ababab"
+    },
+    {
+      "input": "1\nxyz",
+      "output": "xyz"
+    },
+    {
+      "input": "5\nz",
+      "output": "zzzzz"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [first, s] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(first);\nconsole.log(s.repeat(n));\n",
+    "explanation": [
+      {
+        "lead": "repeat を使う。",
+        "body": "文字列の repeat(n) は、その文字列を n 回つなげた新しい文字列を返す。"
+      },
+      {
+        "lead": "行ごとに読み分ける。",
+        "body": "1 行目が N、2 行目が S なので、改行で分けて分割代入で受け取る。"
+      },
+      {
+        "lead": "計算量は O(N × |S|)。",
+        "body": "出力の長さに比例する。"
+      }
+    ]
+  }
+}

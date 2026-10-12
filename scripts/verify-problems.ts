@@ -1,51 +1,97 @@
 // 問題 JSON の検証。模範解答をアプリと同じ変換・実行の仕組みで動かし、サンプルの出力と比べる。
-//   npm run verify          … 検証のみ。食い違いがあれば終了コード 1
-//   npm run verify -- --write … 模範解答の出力でサンプルの output を書き換える
+//   npm run verify             … 検証のみ。食い違いがあれば終了コード 1
+//   npm run verify -- --write  … 模範解答の出力でサンプルの output を書き換える
+//   npm run verify -- <id>...  … 指定した問題だけを対象にする
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { executeJs } from "../src/lib/runner/execute";
 import { normalizeOutput, outputsMatch } from "../src/lib/runner/compare";
 import { transpile } from "../src/lib/runner/transpile";
-import type { Problem } from "../src/lib/problem";
+import { DIFFICULTIES, type Problem } from "../src/lib/problem";
 
 const dir = join(import.meta.dirname, "..", "problems");
-const write = process.argv.includes("--write");
+const args = process.argv.slice(2);
+const write = args.includes("--write");
+const only = new Set(args.filter((a) => !a.startsWith("--")));
+
+const STARTER = 'import * as fs from "fs";\n\nconst input: string[] = fs.readFileSync(0, "utf8").trim().split("\\n");\n\n// ここに解答を書く\n';
+
+// 型だけでは守れない、中身の形を確かめる
+function checkShape(p: Problem, file: string): string[] {
+  const errors: string[] = [];
+  const nonEmpty = (v: unknown) => typeof v === "string" && v.trim() !== "";
+  if (`${p.id}.json` !== file) errors.push(`id "${p.id}" がファイル名と一致しない`);
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(p.id ?? "")) errors.push("id は英小文字・数字・ハイフンのみ");
+  for (const key of ["title", "statement", "inputFormat", "outputFormat"] as const) {
+    if (!nonEmpty(p[key])) errors.push(`${key} が空`);
+  }
+  if (!DIFFICULTIES.some((d) => d.level === p.difficulty)) errors.push(`difficulty が不正: ${p.difficulty}`);
+  if (!Array.isArray(p.constraints) || p.constraints.length === 0) errors.push("constraints が空");
+  if (typeof p.timeLimitMs !== "number" || p.timeLimitMs <= 0) errors.push("timeLimitMs が不正");
+  if (!Array.isArray(p.samples) || p.samples.length === 0) errors.push("samples が空");
+  else if (p.samples.some((s) => !nonEmpty(s.input))) errors.push("入力が空のサンプルがある");
+  if (!Array.isArray(p.hiddenTests)) errors.push("hiddenTests が配列でない");
+  if (p.starterCode !== STARTER) errors.push("starterCode が標準の雛形と違う");
+  if (!nonEmpty(p.solution?.code)) errors.push("solution.code が空");
+  if (!Array.isArray(p.solution?.explanation) || p.solution.explanation.length === 0) {
+    errors.push("solution.explanation が空");
+  } else if (p.solution.explanation.some((e) => !nonEmpty(e.lead) || !nonEmpty(e.body))) {
+    errors.push("lead か body が空の解説がある");
+  }
+  return errors;
+}
+
 let failed = false;
+const ids = new Map<string, string>();
+const titles = new Map<string, string>();
+const counts = new Map<number, number>();
 
 for (const file of readdirSync(dir).filter((f) => f.endsWith(".json")).sort()) {
   const path = join(dir, file);
   const problem: Problem = JSON.parse(readFileSync(path, "utf8"));
-  const problems: string[] = [];
+  counts.set(problem.difficulty, (counts.get(problem.difficulty) ?? 0) + 1);
+  if (titles.has(problem.title)) {
+    failed = true;
+    console.log(`NG ${file}\n   - タイトルが ${titles.get(problem.title)} と重複`);
+  }
+  titles.set(problem.title, file);
+  ids.set(problem.id, file);
+  if (only.size > 0 && !only.has(problem.id)) continue;
 
-  if (`${problem.id}.json` !== file) problems.push(`id "${problem.id}" がファイル名と一致しない`);
-
-  const compiled = transpile(problem.solution.code);
+  const errors = checkShape(problem, file);
+  const compiled = transpile(problem.solution?.code ?? "");
   if (!compiled.ok) {
-    problems.push(...compiled.errors.map((e) => `模範解答の構文エラー ${e.line}:${e.column} ${e.message}`));
+    errors.push(...compiled.errors.map((e) => `模範解答の構文エラー ${e.line}:${e.column} ${e.message}`));
   } else {
-    problem.samples.forEach((sample, i) => {
+    (problem.samples ?? []).forEach((sample, i) => {
       const r = executeJs(compiled.js, sample.input);
       if (r.kind === "error") {
-        problems.push(`サンプル ${i + 1}: 実行時エラー ${r.message}`);
+        errors.push(`サンプル ${i + 1}: 実行時エラー ${r.message}`);
       } else if (r.timeMs > problem.timeLimitMs) {
-        problems.push(`サンプル ${i + 1}: 時間切れ (${r.timeMs.toFixed(0)} ms)`);
+        errors.push(`サンプル ${i + 1}: 時間切れ (${r.timeMs.toFixed(0)} ms)`);
+      } else if (normalizeOutput(r.stdout) === "") {
+        errors.push(`サンプル ${i + 1}: 模範解答の出力が空`);
       } else if (write) {
         sample.output = normalizeOutput(r.stdout);
       } else if (!outputsMatch(r.stdout, sample.output)) {
-        problems.push(`サンプル ${i + 1}: 期待 ${JSON.stringify(sample.output)} / 模範解答 ${JSON.stringify(normalizeOutput(r.stdout))}`);
+        errors.push(
+          `サンプル ${i + 1}: 期待 ${JSON.stringify(sample.output)} / 模範解答 ${JSON.stringify(normalizeOutput(r.stdout))}`,
+        );
       }
     });
   }
 
-  if (problems.length > 0) {
+  if (errors.length > 0) {
     failed = true;
     console.log(`NG ${file}`);
-    for (const p of problems) console.log(`   - ${p}`);
+    for (const e of errors) console.log(`   - ${e}`);
     continue;
   }
   if (write) writeFileSync(path, JSON.stringify(problem, null, 2) + "\n");
   console.log(`OK ${file}${write ? "（出力を書き込み）" : ""}`);
 }
 
+const summary = DIFFICULTIES.map((d) => `${d.label} ${counts.get(d.level) ?? 0}`).join(" / ");
+console.log(`\n全 ${ids.size} 問（${summary}）`);
 process.exit(failed ? 1 : 0);

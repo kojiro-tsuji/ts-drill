@@ -1,0 +1,48 @@
+{
+  "id": "longest-subarray-sum-limit",
+  "title": "和が K 以下の最長区間",
+  "difficulty": 3,
+  "statement": "長さ N の正の整数列 A と整数 K が与えられる。連続する区間で、要素の和が K 以下になるもののうち、最も長いものの長さを出力せよ。そのような区間がなければ 0 を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 2 × 10⁵",
+    "1 ≤ Ai ≤ 10⁹",
+    "1 ≤ K ≤ 10¹⁴",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N K\nA1 A2 … AN",
+  "outputFormat": "最長の長さを 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "6 7\n2 3 1 2 4 3",
+      "output": "3"
+    },
+    {
+      "input": "3 1\n5 6 7",
+      "output": "0"
+    },
+    {
+      "input": "4 100\n10 20 30 40",
+      "output": "4"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, k] = first.split(\" \").map(Number);\nconst a = second.split(\" \").map(Number);\n\n// 尺取り法: 右端を 1 つずつ伸ばし、和が K を超えたら左端を縮める\nlet left = 0;\nlet sum = 0;\nlet best = 0;\nfor (let right = 0; right < n; right++) {\n  sum += a[right];\n  while (sum > k) {\n    sum -= a[left];\n    left++;\n  }\n  best = Math.max(best, right - left + 1);\n}\nconsole.log(best);\n",
+    "explanation": [
+      {
+        "lead": "要素が正なので、尺取り法が使える。",
+        "body": "区間を右に伸ばすと和は増え、左を縮めると減る。この単調性があるので、左端は後戻りしなくてよい。"
+      },
+      {
+        "lead": "右端ごとに、条件を満たす最も左の位置を保つ。",
+        "body": "和が K を超えたら左端を進める。そのときの区間の長さ right − left + 1 で答えを更新する。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "左端も右端も N 回しか動かない。区間が空になるときは長さ 0 として扱われる。"
+      }
+    ]
+  }
+}

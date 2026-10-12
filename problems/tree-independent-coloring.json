@@ -1,0 +1,47 @@
+{
+  "id": "tree-independent-coloring",
+  "title": "木の塗り分け",
+  "difficulty": 5,
+  "statement": "頂点に 1 から N の番号が付いた木が与えられる。i 番目の辺は頂点 Ui と Vi を結ぶ。各頂点を白か黒で塗るとき、黒い頂点どうしが辺で隣り合わない塗り方の数を 10⁹ + 7 で割った余りを出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁵",
+    "与えられるグラフは木",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nU1 V1\n…\nU(N−1) V(N−1)",
+  "outputFormat": "塗り方の数を 10⁹ + 7 で割った余りを 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "3\n1 2\n2 3",
+      "output": "5"
+    },
+    {
+      "input": "1",
+      "output": "2"
+    },
+    {
+      "input": "4\n1 2\n1 3\n1 4",
+      "output": "9"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(lines[0]);\nconst MOD = 1_000_000_007n;\nconst graph: number[][] = Array.from({ length: n + 1 }, () => []);\nfor (let i = 1; i < n; i++) {\n  const [u, v] = lines[i].split(\" \").map(Number);\n  graph[u].push(v);\n  graph[v].push(u);\n}\n\n// 頂点 1 を根として BFS 順を求める。逆順に処理すれば子が先に計算される\nconst parent = new Int32Array(n + 1);\nconst order = [1];\nparent[1] = -1;\nfor (let head = 0; head < order.length; head++) {\n  const v = order[head];\n  for (const next of graph[v]) {\n    if (next === parent[v]) continue;\n    parent[next] = v;\n    order.push(next);\n  }\n}\n\n// white[v], black[v] = v を白・黒に塗ったとき、v の部分木の塗り方の数\nconst white = new Array<bigint>(n + 1).fill(1n);\nconst black = new Array<bigint>(n + 1).fill(1n);\nfor (let i = order.length - 1; i >= 0; i--) {\n  const v = order[i];\n  const p = parent[v];\n  if (p === -1) continue;\n  // 親が白なら子はどちらでもよい。親が黒なら子は白だけ\n  white[p] = (white[p] * (white[v] + black[v])) % MOD;\n  black[p] = (black[p] * white[v]) % MOD;\n}\nconsole.log(((white[1] + black[1]) % MOD).toString());\n",
+    "explanation": [
+      {
+        "lead": "根の色ごとに部分木の塗り方を数える（木 DP）。",
+        "body": "v が白なら、子はそれぞれ白でも黒でもよい。v が黒なら、子はすべて白でなければならない。子ごとの数を掛け合わせる。"
+      },
+      {
+        "lead": "子から親へ順に計算する。",
+        "body": "BFS の順番の逆から処理すれば、親より先に子の値が決まる。再帰を使わないので、深い木でも安全。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "10⁹ 程度の数どうしの積は Number で正確に扱えないので、BigInt で掛けて余りを取る。答えは根が白の場合と黒の場合の和。"
+      }
+    ]
+  }
+}

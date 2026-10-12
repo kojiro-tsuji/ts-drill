@@ -1,0 +1,46 @@
+{
+  "id": "sum-one-to-n",
+  "title": "1 から N までの和",
+  "difficulty": 1,
+  "statement": "正の整数 N が与えられる。1 + 2 + … + N を出力せよ。",
+  "constraints": [
+    "1 ≤ N ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N",
+  "outputFormat": "和を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "10",
+      "output": "55"
+    },
+    {
+      "input": "1",
+      "output": "1"
+    },
+    {
+      "input": "1000000000",
+      "output": "500000000500000000"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\n// 答えは最大で約 5 × 10¹⁷ になるので BigInt で計算する\nconst n = BigInt(readFileSync(0, \"utf8\").trim());\nconsole.log(((n * (n + 1n)) / 2n).toString());\n",
+    "explanation": [
+      {
+        "lead": "和の公式 N(N+1)/2 を使う。",
+        "body": "ループで足すと N = 10⁹ では遅い。公式なら 1 回の計算で求まる。"
+      },
+      {
+        "lead": "BigInt で計算する。",
+        "body": "答えは最大で約 5 × 10¹⁷ になり、Number が正確に表せる 2⁵³ ≈ 9 × 10¹⁵ を超える。BigInt なら誤差が出ない。"
+      },
+      {
+        "lead": "計算量は O(1)。",
+        "body": "公式を 1 回計算するだけ。"
+      }
+    ]
+  }
+}

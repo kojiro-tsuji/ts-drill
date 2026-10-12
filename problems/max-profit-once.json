@@ -1,0 +1,47 @@
+{
+  "id": "max-profit-once",
+  "title": "株の 1 回売買",
+  "difficulty": 2,
+  "statement": "N 日分の株価 P1, P2, …, PN が与えられる。i < j となる日 i に 1 株買い、日 j に売るとき、得られる利益 Pj − Pi の最大値を出力せよ。利益が正にならないときは 0 を出力せよ（売買しないことにする）。",
+  "constraints": [
+    "2 ≤ N ≤ 10⁵",
+    "1 ≤ Pi ≤ 10⁹",
+    "入力はすべて整数"
+  ],
+  "inputFormat": "N\nP1 P2 … PN",
+  "outputFormat": "最大の利益を 1 行で出力",
+  "timeLimitMs": 2000,
+  "samples": [
+    {
+      "input": "6\n7 1 5 3 6 4",
+      "output": "5"
+    },
+    {
+      "input": "4\n9 7 4 1",
+      "output": "0"
+    },
+    {
+      "input": "2\n1 1000000000",
+      "output": "999999999"
+    }
+  ],
+  "hiddenTests": [],
+  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "solution": {
+    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst p = second.split(\" \").map(Number);\n\n// その日より前の最安値で買ったと考える\nlet minPrice = p[0];\nlet best = 0;\nfor (let j = 1; j < p.length; j++) {\n  best = Math.max(best, p[j] - minPrice);\n  minPrice = Math.min(minPrice, p[j]);\n}\nconsole.log(best);\n",
+    "explanation": [
+      {
+        "lead": "売る日を固定して考える。",
+        "body": "日 j に売るなら、それより前の最安値で買うのが最善。"
+      },
+      {
+        "lead": "最安値を更新しながら進む。",
+        "body": "先に利益を計算してから最安値を更新すれば、同じ日に売買することはない。"
+      },
+      {
+        "lead": "計算量は O(N)。",
+        "body": "すべての組を調べる O(N²) では、N = 10⁵ で間に合わない。"
+      }
+    ]
+  }
+}
