@@ -42,20 +42,79 @@ const input: string[] = fs.readFileSync(0, "utf8").trim().split("\n");
 
 ## 構成
 
+### ディレクトリ
+
 ```
-problems/                 問題 JSON（1 問 1 ファイル。置くだけでアプリに出る）
-scripts/verify-problems.ts 問題の検証。模範解答を実行してサンプルの出力と照合する
-docs/
-  problem-authoring.md    問題の作り方（AI に頼むときの手順書）
-  deploy.md               Cloudflare へのデプロイ手順
-src/
-  app/                    Next.js の App Router（ページ・レイアウト・フォント・CSS）
-  components/             画面の部品（3 つのパネル、ヘッダー、Monaco の設定、幅の調整、テーマ）
-  lib/
-    problem.ts            問題の型と難易度
-    load-problems.ts      problems/*.json をビルド時に読み込む
-    runner/               コード実行エンジン（下の図）
-wrangler.jsonc            Cloudflare Workers の設定（out/ を静的に配信）
+ts-drill/
+├── problems/                        問題データ（1 問 1 ファイル、全 100 問）
+│   ├── adjacent-diff-max.json
+│   ├── count-evens.json
+│   └── …                             置くだけでアプリに出る。一覧への登録は不要
+├── scripts/
+│   └── verify-problems.ts           問題の検証。模範解答を実行し、サンプルの出力と照合する
+├── docs/
+│   ├── problem-authoring.md         問題の作り方（AI に頼むときの手順書）
+│   └── deploy.md                    Cloudflare へのデプロイ手順と npm のバージョンの注意
+├── src/
+│   ├── app/                         Next.js の App Router
+│   │   ├── layout.tsx               ルートレイアウト。描画前に保存済みのテーマを反映する
+│   │   ├── page.tsx                 トップページ。ビルド時に全問題を読み込んで渡す
+│   │   ├── client-app.tsx           画面本体をブラウザだけで描画する（ssr: false）
+│   │   ├── fonts.ts                 Zen Kaku Gothic New と JetBrains Mono の読み込み
+│   │   ├── globals.css              色のトークン（ダーク／ライト）と Tailwind の設定
+│   │   └── favicon.ico
+│   ├── components/                  画面の部品
+│   │   ├── tsdrill-app.tsx          画面全体。出題・実行・模範解答の表示などの状態を持つ
+│   │   ├── header.tsx               ロゴ、難易度の選択、次の問題へ、テーマ切り替え
+│   │   ├── resizable-columns.tsx    3 つのパネルの横並びと、境目のドラッグでの幅調整
+│   │   ├── problem-panel.tsx        左: 問題文・制約・入出力形式・サンプル
+│   │   ├── editor-panel.tsx         中央: エディタ、ステータスバー、テスト結果
+│   │   ├── solution-panel.tsx       右: 模範解答のコードと解説（表示／非表示）
+│   │   ├── code-editor.tsx          Monaco のエディタ（編集用）と読み取り専用ビュー
+│   │   ├── monaco-setup.ts          Monaco の読み込み元・配色テーマ・ハイライト規則・型情報
+│   │   ├── ui.tsx                   パネル、ボタン、ピル、コード枠などの共通部品
+│   │   ├── icons.tsx                インライン SVG のアイコン
+│   │   └── use-theme.ts             テーマの切り替えと保存
+│   └── lib/
+│       ├── problem.ts               問題の型（Problem）と難易度の定義
+│       ├── load-problems.ts         problems/*.json をビルド時にすべて読み込む
+│       ├── theme.ts                 テーマの型と保存キー
+│       └── runner/                  コード実行エンジン
+│           ├── judge.ts             判定の入口。変換 → サンプルごとに実行 → 比較 → 結果
+│           ├── compile.worker.ts    変換用 Worker（常駐）
+│           ├── transpile.ts         TypeScript → JS の変換と構文エラーの取り出し
+│           ├── exec.worker.ts       実行用 Worker（サンプルごとに作り直す）
+│           ├── execute.ts           JS の実行。fs・console・process を模擬して出力を集める
+│           └── compare.ts           出力の比較（行末の空白と末尾の空行を無視）
+├── AGENTS.md                        AI 向けの作業ルール（CLAUDE.md から読み込まれる）
+├── CLAUDE.md
+├── README.md
+├── next.config.ts                   静的書き出し（output: "export"）の設定
+├── wrangler.jsonc                   Cloudflare Workers の設定（out/ を静的に配信）
+├── eslint.config.mjs
+├── tsconfig.json
+├── package.json                     npm 10.9.2 を指定（packageManager / devEngines）
+└── package-lock.json
+```
+
+ビルドすると `out/` に静的ファイル一式ができる（Git には含めない）。
+
+### 画面のコンポーネント
+
+```
+page.tsx                             ビルド時: problems/*.json を読んで渡す
+└── ClientApp (client-app.tsx)       ブラウザでだけ描画する
+    └── TsdrillApp (tsdrill-app.tsx) 状態: 現在の問題・難易度・コード・実行結果・模範解答の表示・テーマ
+        ├── Header                   難易度の選択、次の問題へ、テーマ切り替え
+        └── ResizableColumns         横並びと境目（幅 1024px 未満は縦積み）
+            ├── ProblemPanel         問題
+            ├── EditorPanel          実行ボタン
+            │   ├── CodeEditor       Monaco（solution.ts）
+            │   ├── ステータスバー     カーソル位置
+            │   └── テスト結果         サンプルごとの判定・出力・実行時間
+            └── SolutionPanel        模範解答
+                ├── CodeViewer       Monaco（読み取り専用）
+                └── 解説
 ```
 
 ### コードを実行する仕組み
@@ -68,6 +127,29 @@ flowchart LR
   X -->|標準出力| J["判定<br>judge.ts / compare.ts"]
   J --> R
   T[制限時間タイマー] -.->|時間切れで terminate| X
+```
+
+「実行」を押したときの流れ:
+
+```
+EditorPanel の「実行」
+└── judge(コード, サンプル, 制限時間)                      judge.ts
+    ├── 1. 変換: compile(コード)                           変換用 Worker（常駐）
+    │   ├── transpileModule で TypeScript → JS（CommonJS）
+    │   └── 構文エラーがあれば → 「構文エラー」として行・列・メッセージを返して終了
+    └── 2. サンプルごとに順番に実行                         runOnce()
+        ├── 新しい実行用 Worker を作る                     exec.worker.ts
+        ├── Worker から "ready" が届いたら、制限時間のタイマーを開始
+        ├── JS と入力文字列を Worker に送る
+        │   └── executeJs(JS, 入力)                         execute.ts
+        │       ├── fs.readFileSync(0) → 入力文字列を返す
+        │       ├── console.log / process.stdout.write → 出力を溜める
+        │       └── 実行時間を計り、出力（またはエラー）を返す
+        ├── 結果を受け取るか時間切れになったら、Worker を terminate
+        └── 判定して画面のその行をすぐ更新する
+            ├── 時間切れ（または実行時間が制限超え） → 時間切れ
+            ├── 例外が出た                         → エラー（メッセージを表示）
+            └── 出力を比べる（compare.ts）          → 正解 / 不正解
 ```
 
 - **変換**: `typescript` の `transpileModule` で JS（CommonJS）に変換する。型検査はせず、構文エラーだけを返す（型エラーはエディタの波線で見せる）。変換用 Worker は 1 つを使い回し、画面を開いた時点で先読みしておく。
