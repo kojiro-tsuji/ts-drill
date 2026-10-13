@@ -18,6 +18,13 @@
 - `npm run preview` … ビルドして、Cloudflare と同じ配信方法で `http://localhost:8787` に立ち上げる。
 - `npm run deploy` … 手元からデプロイする（初回は `npx wrangler login` でログインが必要）。GitHub 連携を使うなら不要。
 
+## npm のバージョン
+
+Cloudflare のビルド環境は npm 10.9.2 で、npm 11 が書いた package-lock.json を `npm ci` で受け付けないことがある（実際に起きた）。そのため `package.json` の `packageManager` と `devEngines` で npm 10.9.2 を指定している。
+
+- 違うバージョンの npm で `npm install` すると `EBADDEVENGINES` の警告が出る（止まりはしない）。
+- パッケージを追加・更新するときは、ロックファイルを npm 10 で書くために `npx npm@10.9.2 install <パッケージ>` を使う。npx を動かす外側の npm が 11 だと同じ警告が出るが、実際の処理は 10.9.2 で行われるので問題ない。
+
 ## 注意
 
 - `next.config.ts` の `output: "export"` を外すと静的書き出しにならず、このデプロイ方法は使えない。

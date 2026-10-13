@@ -11,4 +11,5 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 ## tsdrill
 
 - 問題を追加・修正するときは `docs/problem-authoring.md` に従う。サンプルの出力は `npm run verify -- --write <id>` で模範解答から作る。
+- パッケージの追加・更新は `npx npm@10.9.2 install <パッケージ>` で行う（Cloudflare のビルドが npm 10.9.2 のため。詳細は `docs/deploy.md`）。
 - コード実行エンジンは `src/lib/runner/`。`execute.ts` はブラウザの Worker と検証スクリプトの両方で使うので、DOM にも Node にも依存させない。
