@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"5\"\n//   input[1] は \"3 8 1 9 4\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\n// 1 回の走査で最大と最小を同時に求める\nlet max = a[0];\nlet min = a[0];\nfor (const x of a) {\n  if (x > max) max = x;\n  if (x < min) min = x;\n}\nconsole.log(max - min);\n",
     "explanation": [

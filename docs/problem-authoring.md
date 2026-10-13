@@ -5,8 +5,8 @@
 ## 手順
 
 1. 既存の問題と重複しないテーマを選ぶ（`problems/` のタイトルを確認）。
-2. `problems/<id>.json` を書く。サンプルの `output` は **空文字 `""` のままにする**（AI に計算させない）。
-3. `npm run verify -- --write <id>` で模範解答を実行し、`output` を書き込む。
+2. `problems/<id>.json` を書く。サンプルの `output` と `starterCode` は **空文字 `""` のままにする**（AI に計算させない）。
+3. `npm run verify -- --write <id>` で模範解答を実行し、`output` を書き込む。同時に、入力例 1 で `input` に何が入るかをコメントで示した雛形が `starterCode` に入る。
 4. 書き込まれた出力が、問題文から想定される答えと一致するか目で確かめる。食い違えば模範解答か問題文が誤り。直して 3 に戻る。
 5. `npm run verify` が全問 OK になることを確認する。
 
@@ -24,7 +24,7 @@
   "timeLimitMs": 2000,
   "samples": [{ "input": "5\n3 1 4 1 5", "output": "" }],  // 2〜3 個
   "hiddenTests": [],
-  "starterCode": "（標準の雛形。既存の問題からそのまま写す）",
+  "starterCode": "",                  // 空のままでよい。--write が入力例 1 から作る（src/lib/starter-code.ts）
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n…",
     "explanation": [{ "lead": "要点。", "body": "本文。" }]  // 2〜4 個

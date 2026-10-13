@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"4\"\n//   input[1] は \"bob 80\"\n//   input[2] は \"alice 90\"\n//   …（全 5 行。最後は input[4]）\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(lines[0]);\nconst people = lines.slice(1, n + 1).map((l) => {\n  const [name, score] = l.split(\" \");\n  return { name, score: Number(score) };\n});\n\npeople.sort((p, q) => {\n  if (p.score !== q.score) return q.score - p.score; // 点数は降順\n  return p.name < q.name ? -1 : 1; // 名前は昇順\n});\nconsole.log(people.map((p) => p.name).join(\"\\n\"));\n",
     "explanation": [

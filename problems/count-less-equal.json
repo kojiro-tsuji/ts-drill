@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"5 3\"\n//   input[1] は \"3 1 4 1 5\"\n//   input[2] は \"1\"\n//   …（全 5 行。最後は input[4]）\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [, q] = lines[0].split(\" \").map(Number);\nconst a = lines[1].split(\" \").map(Number).sort((x, y) => x - y);\n\n// a の中で x より大きい最初の位置（= x 以下の個数）を二分探索で求める\nfunction upperBound(x: number): number {\n  let lo = 0;\n  let hi = a.length;\n  while (lo < hi) {\n    const mid = (lo + hi) >> 1;\n    if (a[mid] <= x) lo = mid + 1;\n    else hi = mid;\n  }\n  return lo;\n}\n\nconst out: number[] = [];\nfor (let i = 0; i < q; i++) out.push(upperBound(Number(lines[2 + i])));\nconsole.log(out.join(\"\\n\"));\n",
     "explanation": [

@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"5 6\"\n//   input[1] は \"1 5 3 3 2\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, k] = first.split(\" \").map(Number);\nconst a = second.split(\" \").map(Number);\n\n// N ≤ 2000 なので、すべての組を調べても約 200 万回で済む\nlet count = 0;\nfor (let i = 0; i < n; i++) {\n  for (let j = i + 1; j < n; j++) {\n    if (a[i] + a[j] === k) count++;\n  }\n}\nconsole.log(count);\n",
     "explanation": [

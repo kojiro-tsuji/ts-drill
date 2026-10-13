@@ -27,7 +27,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"5 3\"\n//   input[1] は \"1 2 3 4 5\"\n//   input[2] は \"1 3\"\n//   …（全 5 行。最後は input[4]）\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, q] = lines[0].split(\" \").map(Number);\nconst a = lines[1].split(\" \").map(Number);\n\n// prefix[i] = A1 + … + Ai（prefix[0] = 0）\nconst prefix = new Array(n + 1).fill(0);\nfor (let i = 0; i < n; i++) prefix[i + 1] = prefix[i] + a[i];\n\nconst out: number[] = [];\nfor (let i = 0; i < q; i++) {\n  const [l, r] = lines[2 + i].split(\" \").map(Number);\n  out.push(prefix[r] - prefix[l - 1]);\n}\nconsole.log(out.join(\"\\n\"));\n",
     "explanation": [

@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"5\"\n//   input[1] は \"3 1 4 1 5\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\n// 値を 1 始まりの順位に置き換える（座標圧縮）\nconst sorted = [...new Set(a)].sort((x, y) => x - y);\nconst rank = new Map<number, number>();\nsorted.forEach((v, i) => rank.set(v, i + 1));\n\n// BIT（Fenwick 木）: 順位ごとの出現回数を管理し、前からの和を O(log N) で求める\nconst m = sorted.length;\nconst bit = new Int32Array(m + 1);\nconst add = (i: number) => {\n  for (; i <= m; i += i & -i) bit[i]++;\n};\nconst sum = (i: number) => {\n  let s = 0;\n  for (; i > 0; i -= i & -i) s += bit[i];\n  return s;\n};\n\nlet inversions = 0;\na.forEach((x, j) => {\n  const r = rank.get(x)!;\n  // これまでの j 個のうち、x より大きいもの = j - (x 以下の個数)\n  inversions += j - sum(r);\n  add(r);\n});\nconsole.log(inversions);\n",
     "explanation": [

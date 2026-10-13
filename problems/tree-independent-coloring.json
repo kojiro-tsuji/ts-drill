@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"3\"\n//   input[1] は \"1 2\"\n//   input[2] は \"2 3\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(lines[0]);\nconst MOD = 1_000_000_007n;\nconst graph: number[][] = Array.from({ length: n + 1 }, () => []);\nfor (let i = 1; i < n; i++) {\n  const [u, v] = lines[i].split(\" \").map(Number);\n  graph[u].push(v);\n  graph[v].push(u);\n}\n\n// 頂点 1 を根として BFS 順を求める。逆順に処理すれば子が先に計算される\nconst parent = new Int32Array(n + 1);\nconst order = [1];\nparent[1] = -1;\nfor (let head = 0; head < order.length; head++) {\n  const v = order[head];\n  for (const next of graph[v]) {\n    if (next === parent[v]) continue;\n    parent[next] = v;\n    order.push(next);\n  }\n}\n\n// white[v], black[v] = v を白・黒に塗ったとき、v の部分木の塗り方の数\nconst white = new Array<bigint>(n + 1).fill(1n);\nconst black = new Array<bigint>(n + 1).fill(1n);\nfor (let i = order.length - 1; i >= 0; i--) {\n  const v = order[i];\n  const p = parent[v];\n  if (p === -1) continue;\n  // 親が白なら子はどちらでもよい。親が黒なら子は白だけ\n  white[p] = (white[p] * (white[v] + black[v])) % MOD;\n  black[p] = (black[p] * white[v]) % MOD;\n}\nconsole.log(((white[1] + black[1]) % MOD).toString());\n",
     "explanation": [

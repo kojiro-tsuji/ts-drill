@@ -27,7 +27,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"4\"\n//   input[1] は \"0 10 15 20\"\n//   input[2] は \"5 0 9 10\"\n//   …（全 5 行。最後は input[4]）\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(lines[0]);\nconst d = lines.slice(1, n + 1).map((l) => l.split(\" \").map(Number));\n\n// dp[mask * n + v] = 訪問済みの集合が mask で、今 v にいるときの最小コスト\nconst full = 1 << n;\nconst dp = new Float64Array(full * n).fill(Infinity);\ndp[1 * n + 0] = 0; // 都市 1（添字 0）から出発\nfor (let mask = 1; mask < full; mask++) {\n  if (!(mask & 1)) continue; // 出発地を含まない状態は使わない\n  for (let v = 0; v < n; v++) {\n    const cur = dp[mask * n + v];\n    if (cur === Infinity) continue;\n    for (let to = 0; to < n; to++) {\n      if (mask & (1 << to)) continue;\n      const next = (mask | (1 << to)) * n + to;\n      if (cur + d[v][to] < dp[next]) dp[next] = cur + d[v][to];\n    }\n  }\n}\n\nlet best = Infinity;\nfor (let v = 0; v < n; v++) best = Math.min(best, dp[(full - 1) * n + v] + d[v][0]);\nconsole.log(best);\n",
     "explanation": [

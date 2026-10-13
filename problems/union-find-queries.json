@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"4 5\"\n//   input[1] は \"1 1 2\"\n//   input[2] は \"0 1 2\"\n//   …（全 6 行。最後は input[5]）\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, q] = lines[0].split(\" \").map(Number);\n\n// parent[v] が負なら v は根で、-parent[v] はその集合の大きさ\nconst parent = new Int32Array(n + 1).fill(-1);\nfunction find(v: number): number {\n  while (parent[v] >= 0) {\n    if (parent[parent[v]] >= 0) parent[v] = parent[parent[v]]; // 経路を短くする\n    v = parent[v];\n  }\n  return v;\n}\nfunction unite(a: number, b: number): void {\n  a = find(a);\n  b = find(b);\n  if (a === b) return;\n  if (parent[a] > parent[b]) [a, b] = [b, a]; // 大きいほうに小さいほうをつなぐ\n  parent[a] += parent[b];\n  parent[b] = a;\n}\n\nconst out: string[] = [];\nfor (let i = 1; i <= q; i++) {\n  const [t, u, v] = lines[i].split(\" \").map(Number);\n  if (t === 0) unite(u, v);\n  else out.push(find(u) === find(v) ? \"Yes\" : \"No\");\n}\nconsole.log(out.join(\"\\n\"));\n",
     "explanation": [

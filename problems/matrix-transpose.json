@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"2 3\"\n//   input[1] は \"1 2 3\"\n//   input[2] は \"4 5 6\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [h, w] = lines[0].split(\" \").map(Number);\nconst a = lines.slice(1, h + 1).map((line) => line.split(\" \").map(Number));\n\nconst out: string[] = [];\nfor (let j = 0; j < w; j++) {\n  // 元の行列の j 列目を縦に読んだものが、転置の j 行目\n  const row: number[] = [];\n  for (let i = 0; i < h; i++) row.push(a[i][j]);\n  out.push(row.join(\" \"));\n}\nconsole.log(out.join(\"\\n\"));\n",
     "explanation": [

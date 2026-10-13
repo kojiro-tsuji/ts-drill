@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"5\"\n//   input[1] は \"2 1 4 3 5\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(first);\nconst a = second.split(\" \").map(Number);\n\nconst answer = new Array(n).fill(-1);\n// まだ答えが決まっていない添字を、値が減少する順に積んでおく\nconst stack: number[] = [];\nfor (let i = 0; i < n; i++) {\n  while (stack.length > 0 && a[stack[stack.length - 1]] < a[i]) {\n    answer[stack.pop()!] = a[i];\n  }\n  stack.push(i);\n}\nconsole.log(answer.join(\" \"));\n",
     "explanation": [

@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"4\"\n//   input[1] は \"10 20 30 40\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(first);\nconst a = second.split(\" \").map(Number);\n\nconst prefix = new Array(n + 1).fill(0);\nfor (let i = 0; i < n; i++) prefix[i + 1] = prefix[i] + a[i];\n\n// dp[l * n + r] = 区間 [l, r] を 1 匹にまとめる最小コスト\nconst dp = new Float64Array(n * n);\nfor (let len = 2; len <= n; len++) {\n  for (let l = 0; l + len - 1 < n; l++) {\n    const r = l + len - 1;\n    let best = Infinity;\n    // 最後の合体で、[l, k] と [k+1, r] がまとまる\n    for (let k = l; k < r; k++) {\n      best = Math.min(best, dp[l * n + k] + dp[(k + 1) * n + r]);\n    }\n    dp[l * n + r] = best + (prefix[r + 1] - prefix[l]);\n  }\n}\nconsole.log(dp[n - 1]);\n",
     "explanation": [

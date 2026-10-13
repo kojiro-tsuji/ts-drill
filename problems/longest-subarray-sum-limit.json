@@ -27,7 +27,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"6 7\"\n//   input[1] は \"2 3 1 2 4 3\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [n, k] = first.split(\" \").map(Number);\nconst a = second.split(\" \").map(Number);\n\n// 尺取り法: 右端を 1 つずつ伸ばし、和が K を超えたら左端を縮める\nlet left = 0;\nlet sum = 0;\nlet best = 0;\nfor (let right = 0; right < n; right++) {\n  sum += a[right];\n  while (sum > k) {\n    sum -= a[left];\n    left++;\n  }\n  best = Math.max(best, right - left + 1);\n}\nconsole.log(best);\n",
     "explanation": [

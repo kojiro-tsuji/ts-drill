@@ -27,7 +27,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"5 3\"\n//   input[1] は \"1 2 0 3 -3\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [, k] = first.split(\" \").map(Number);\nconst a = second.split(\" \").map(Number);\n\n// これまでに現れた累積和ごとの個数\nconst seen = new Map<number, number>([[0, 1]]);\nlet prefix = 0;\nlet count = 0;\nfor (const x of a) {\n  prefix += x;\n  // prefix - (以前の累積和) = K となる以前の累積和の個数を足す\n  count += seen.get(prefix - k) ?? 0;\n  seen.set(prefix, (seen.get(prefix) ?? 0) + 1);\n}\nconsole.log(count);\n",
     "explanation": [

@@ -21,15 +21,24 @@
 
 ## 使える入出力
 
-問題は標準入力から読み、標準出力に答えを書く。エディタの雛形は次のとおり。
+問題は標準入力から読み、標準出力に答えを書く。エディタの雛形は問題ごとに作られ、入力例 1 で `input` に何が入るかをコメントで示している（例:「隣り合う差の最大値」）。
 
 ```ts
 import * as fs from "fs";
 
+// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、
+// 改行で区切って 1 行ずつの配列にする
 const input: string[] = fs.readFileSync(0, "utf8").trim().split("\n");
 
+// 入力例 1 のとき:
+//   input[0] は "5"
+//   input[1] は "3 1 4 1 5"
+
+// 答えは console.log で出力する
 // ここに解答を書く
 ```
+
+雛形は `src/lib/starter-code.ts` が入力例 1 から作り、`npm run verify -- --write` で各問題の JSON に書き込む。
 
 ブラウザ内の実行環境で使える Node.js の機能は次だけ。
 
@@ -76,6 +85,7 @@ ts-drill/
 │       ├── problem.ts               問題の型（Problem）と難易度の定義
 │       ├── load-problems.ts         problems/*.json をビルド時にすべて読み込む（サーバー側専用）
 │       ├── problem-picker.ts        難易度での絞り込み、ランダム出題、難易度ごとの問題数
+│       ├── starter-code.ts          エディタの雛形を、入力例 1 の説明コメントつきで作る
 │       ├── pane-sizes.ts            パネル幅の比率の計算と保存
 │       ├── theme.ts                 テーマの型と保存キー
 │       ├── use-theme.ts             テーマの切り替えと保存（React フック）

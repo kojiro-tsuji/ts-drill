@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"2024 3 1\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst [y, m, d] = readFileSync(0, \"utf8\").trim().split(\" \").map(Number);\n\nconst leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0;\nconst days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];\n\n// 前の月までの日数を足し、最後にその月の日を足す\nlet total = d;\nfor (let i = 0; i < m - 1; i++) total += days[i];\nconsole.log(total);\n",
     "explanation": [

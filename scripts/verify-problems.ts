@@ -1,6 +1,6 @@
 // 問題 JSON の検証。模範解答をアプリと同じ変換・実行の仕組みで動かし、サンプルの出力と比べる。
 //   npm run verify             … 検証のみ。食い違いがあれば終了コード 1
-//   npm run verify -- --write  … 模範解答の出力でサンプルの output を書き換える
+//   npm run verify -- --write  … 模範解答の出力でサンプルの output を、入力例 1 から starterCode を書き換える
 //   npm run verify -- <id>...  … 指定した問題だけを対象にする
 
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -9,13 +9,12 @@ import { executeJs } from "../src/lib/runner/execute";
 import { normalizeOutput, outputsMatch } from "../src/lib/runner/compare";
 import { transpile } from "../src/lib/runner/transpile";
 import { DIFFICULTIES, type Problem } from "../src/lib/problem";
+import { buildStarterCode } from "../src/lib/starter-code";
 
 const dir = join(import.meta.dirname, "..", "problems");
 const args = process.argv.slice(2);
 const write = args.includes("--write");
 const only = new Set(args.filter((a) => !a.startsWith("--")));
-
-const STARTER = 'import * as fs from "fs";\n\nconst input: string[] = fs.readFileSync(0, "utf8").trim().split("\\n");\n\n// ここに解答を書く\n';
 
 // 型だけでは守れない、中身の形を確かめる
 function checkShape(p: Problem, file: string): string[] {
@@ -32,7 +31,11 @@ function checkShape(p: Problem, file: string): string[] {
   if (!Array.isArray(p.samples) || p.samples.length === 0) errors.push("samples が空");
   else if (p.samples.some((s) => !nonEmpty(s.input))) errors.push("入力が空のサンプルがある");
   if (!Array.isArray(p.hiddenTests)) errors.push("hiddenTests が配列でない");
-  if (p.starterCode !== STARTER) errors.push("starterCode が標準の雛形と違う");
+  if (p.samples?.length > 0 && p.starterCode !== buildStarterCode(p.samples[0].input)) {
+    errors.push("starterCode が入力例 1 から作る雛形と違う（--write で書き直せる）");
+  } else if (!transpile(p.starterCode).ok) {
+    errors.push("starterCode に構文エラーがある");
+  }
   if (!nonEmpty(p.solution?.code)) errors.push("solution.code が空");
   if (!Array.isArray(p.solution?.explanation) || p.solution.explanation.length === 0) {
     errors.push("solution.explanation が空");
@@ -59,6 +62,7 @@ for (const file of readdirSync(dir).filter((f) => f.endsWith(".json")).sort()) {
   ids.set(problem.id, file);
   if (only.size > 0 && !only.has(problem.id)) continue;
 
+  if (write && problem.samples?.length > 0) problem.starterCode = buildStarterCode(problem.samples[0].input);
   const errors = checkShape(problem, file);
   const compiled = transpile(problem.solution?.code ?? "");
   if (!compiled.ok) {

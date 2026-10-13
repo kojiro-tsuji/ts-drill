@@ -26,7 +26,7 @@
     }
   ],
   "hiddenTests": [],
-  "starterCode": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// ここに解答を書く\n",
+  "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"3 11\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
     "code": "import { readFileSync } from \"fs\";\n\nconst [a, m] = readFileSync(0, \"utf8\").trim().split(\" \").map(BigInt);\n\n// 拡張ユークリッドの互除法: a*s ≡ r (mod m) を保ちながら r を小さくしていく\nlet [oldR, r] = [a % m, m];\nlet [oldS, s] = [1n, 0n];\nwhile (r !== 0n) {\n  const q = oldR / r;\n  [oldR, r] = [r, oldR - q * r];\n  [oldS, s] = [s, oldS - q * s];\n}\n\n// oldR は gcd(a, m)。1 でなければ逆数は存在しない\nif (oldR !== 1n) console.log(\"-1\");\nelse console.log((((oldS % m) + m) % m).toString());\n",
     "explanation": [
