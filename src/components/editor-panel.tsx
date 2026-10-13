@@ -3,16 +3,11 @@
 import { useState } from "react";
 import type { Problem } from "@/lib/problem";
 import { normalizeOutput } from "@/lib/runner/compare";
-import type { JudgeResult, SampleVerdict } from "@/lib/runner/judge";
+import type { RunState, SampleVerdict } from "@/lib/runner/judge";
 import type { Theme } from "@/lib/theme";
 import { CodeEditor } from "./code-editor";
 import { PlayIcon, TsFileIcon } from "./icons";
 import { Button, Panel, PanelHeader, PanelLabel, Pill, type Tone } from "./ui";
-
-export type RunState =
-  | { kind: "idle" }
-  | { kind: "running"; verdicts: (SampleVerdict | undefined)[] }
-  | { kind: "done"; result: JudgeResult };
 
 type Props = {
   problem: Problem;
@@ -69,6 +64,13 @@ export function EditorPanel({ problem, code, onCodeChange, run, hasRun, onRun, t
           </div>
         )}
 
+        {run.kind === "done" && run.result.kind === "system-error" && (
+          <div className="border-t border-line px-4 py-2.5 text-[13px] leading-[1.7] text-error">
+            コードを実行する準備に失敗しました。ページを再読み込みしてから、もう一度実行してください。
+            <div className="mt-1 font-mono text-xs break-all">{run.result.message}</div>
+          </div>
+        )}
+
         {problem.samples.map((sample, i) => (
           <ResultRow key={i} index={i} expected={sample.output} verdict={verdictAt(run, i)} />
         ))}
@@ -87,6 +89,7 @@ function summarize(run: RunState, total: number): { label: string; tone: Tone } 
   if (run.kind === "idle") return { label: "未実行", tone: "idle" };
   if (run.kind === "running") return { label: "実行中…", tone: "idle" };
   if (run.result.kind === "compile-error") return { label: "構文エラー", tone: "error" };
+  if (run.result.kind === "system-error") return { label: "実行できません", tone: "error" };
   const ac = run.result.verdicts.filter((v) => v.status === "AC").length;
   return { label: `${ac} / ${total} サンプル正解`, tone: ac === total ? "ok" : "error" };
 }

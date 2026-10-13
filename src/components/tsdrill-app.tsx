@@ -1,28 +1,24 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import type { Difficulty, Problem } from "@/lib/problem";
-import { judge, warmUpCompiler } from "@/lib/runner/judge";
-import { EditorPanel, type RunState } from "./editor-panel";
-import { Header, type DifficultyFilter } from "./header";
+import type { Problem } from "@/lib/problem";
+import {
+  countByDifficulty,
+  matchesDifficulty,
+  pickRandomProblem,
+  type DifficultyFilter,
+} from "@/lib/problem-picker";
+import { judge, warmUpCompiler, type RunState } from "@/lib/runner/judge";
+import { useTheme } from "@/lib/use-theme";
+import { EditorPanel } from "./editor-panel";
+import { Header } from "./header";
 import { ProblemPanel } from "./problem-panel";
 import { ResizableColumns } from "./resizable-columns";
 import { SolutionPanel } from "./solution-panel";
-import { useTheme } from "./use-theme";
-
-function pickRandom(pool: Problem[], exclude?: Problem): Problem {
-  const candidates = pool.filter((p) => p !== exclude);
-  if (candidates.length === 0) return exclude ?? pool[0];
-  return candidates[Math.floor(Math.random() * candidates.length)];
-}
-
-function matches(problem: Problem, filter: DifficultyFilter): boolean {
-  return filter === "all" || problem.difficulty === filter;
-}
 
 export default function TsdrillApp({ problems }: { problems: Problem[] }) {
   const [difficulty, setDifficulty] = useState<DifficultyFilter>("all");
-  const [problem, setProblem] = useState(() => pickRandom(problems));
+  const [problem, setProblem] = useState(() => pickRandomProblem(problems));
   const [code, setCode] = useState(problem.starterCode);
   const [run, setRun] = useState<RunState>({ kind: "idle" });
   const [hasRun, setHasRun] = useState(false);
@@ -43,13 +39,15 @@ export default function TsdrillApp({ problems }: { problems: Problem[] }) {
   };
 
   const nextProblem = () => {
-    showProblem(pickRandom(problems.filter((p) => matches(p, difficulty)), problem));
+    showProblem(pickRandomProblem(problems.filter((p) => matchesDifficulty(p, difficulty)), problem));
   };
 
   // 難易度を変えたとき、今の問題が条件に合わなければ合う問題に切り替える
   const changeDifficulty = (filter: DifficultyFilter) => {
     setDifficulty(filter);
-    if (!matches(problem, filter)) showProblem(pickRandom(problems.filter((p) => matches(p, filter))));
+    if (!matchesDifficulty(problem, filter)) {
+      showProblem(pickRandomProblem(problems.filter((p) => matchesDifficulty(p, filter))));
+    }
   };
 
   const execute = async () => {
@@ -68,8 +66,7 @@ export default function TsdrillApp({ problems }: { problems: Problem[] }) {
     if (id === runId.current) setRun({ kind: "done", result });
   };
 
-  const counts = new Map<Difficulty, number>();
-  for (const p of problems) counts.set(p.difficulty, (counts.get(p.difficulty) ?? 0) + 1);
+  const counts = countByDifficulty(problems);
 
   return (
     // 横並び（lg 以上）では画面の高さちょうどに収め、下に余白を残さない

@@ -4,9 +4,9 @@
 
 import Editor, { type OnMount } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
-import { jetbrainsMono } from "@/app/fonts";
+import { jetbrainsMono } from "@/lib/fonts";
+import { MONACO_THEMES, setupMonaco } from "@/lib/monaco-setup";
 import type { Theme } from "@/lib/theme";
-import { MONACO_THEMES, setupMonaco } from "./monaco-setup";
 
 const baseOptions: editor.IStandaloneEditorConstructionOptions = {
   fontFamily: jetbrainsMono.style.fontFamily,

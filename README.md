@@ -56,29 +56,31 @@ ts-drill/
 │   ├── problem-authoring.md         問題の作り方（AI に頼むときの手順書）
 │   └── deploy.md                    Cloudflare へのデプロイ手順と npm のバージョンの注意
 ├── src/
-│   ├── app/                         Next.js の App Router
+│   ├── app/                         URL のルーティングだけ（Next.js の App Router）
 │   │   ├── layout.tsx               ルートレイアウト。描画前に保存済みのテーマを反映する
-│   │   ├── page.tsx                 トップページ。ビルド時に全問題を読み込んで渡す
-│   │   ├── client-app.tsx           画面本体をブラウザだけで描画する（ssr: false）
-│   │   ├── fonts.ts                 Zen Kaku Gothic New と JetBrains Mono の読み込み
+│   │   ├── page.tsx                 トップページ（/）。ビルド時に全問題を読み込んで渡す
 │   │   ├── globals.css              色のトークン（ダーク／ライト）と Tailwind の設定
-│   │   └── favicon.ico
-│   ├── components/                  画面の部品
+│   │   └── favicon.ico              /favicon.ico
+│   ├── components/                  UI の部品（表示と操作だけ。処理は lib/ を呼ぶ）
+│   │   ├── client-app.tsx           画面本体をブラウザだけで描画する（ssr: false）
 │   │   ├── tsdrill-app.tsx          画面全体。出題・実行・模範解答の表示などの状態を持つ
 │   │   ├── header.tsx               ロゴ、難易度の選択、次の問題へ、テーマ切り替え
-│   │   ├── resizable-columns.tsx    3 つのパネルの横並びと、境目のドラッグでの幅調整
+│   │   ├── resizable-columns.tsx    3 つのパネルの横並びと、境目のドラッグ
 │   │   ├── problem-panel.tsx        左: 問題文・制約・入出力形式・サンプル
 │   │   ├── editor-panel.tsx         中央: エディタ、ステータスバー、テスト結果
 │   │   ├── solution-panel.tsx       右: 模範解答のコードと解説（表示／非表示）
 │   │   ├── code-editor.tsx          Monaco のエディタ（編集用）と読み取り専用ビュー
-│   │   ├── monaco-setup.ts          Monaco の読み込み元・配色テーマ・ハイライト規則・型情報
 │   │   ├── ui.tsx                   パネル、ボタン、ピル、コード枠などの共通部品
-│   │   ├── icons.tsx                インライン SVG のアイコン
-│   │   └── use-theme.ts             テーマの切り替えと保存
-│   └── lib/
+│   │   └── icons.tsx                インライン SVG のアイコン
+│   └── lib/                         機能（UI を持たない処理・型・設定）
 │       ├── problem.ts               問題の型（Problem）と難易度の定義
-│       ├── load-problems.ts         problems/*.json をビルド時にすべて読み込む
+│       ├── load-problems.ts         problems/*.json をビルド時にすべて読み込む（サーバー側専用）
+│       ├── problem-picker.ts        難易度での絞り込み、ランダム出題、難易度ごとの問題数
+│       ├── pane-sizes.ts            パネル幅の比率の計算と保存
 │       ├── theme.ts                 テーマの型と保存キー
+│       ├── use-theme.ts             テーマの切り替えと保存（React フック）
+│       ├── fonts.ts                 Zen Kaku Gothic New と JetBrains Mono の読み込み
+│       ├── monaco-setup.ts          Monaco の読み込み元・配色テーマ・ハイライト規則・型情報
 │       └── runner/                  コード実行エンジン
 │           ├── judge.ts             判定の入口。変換 → サンプルごとに実行 → 比較 → 結果
 │           ├── compile.worker.ts    変換用 Worker（常駐）

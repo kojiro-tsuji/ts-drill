@@ -2,7 +2,7 @@
 
 import { loader, type Monaco } from "@monaco-editor/react";
 import type { languages } from "monaco-editor";
-import type { Theme } from "@/lib/theme";
+import type { Theme } from "./theme";
 
 // 型定義（node_modules の monaco-editor）と同じ版を CDN から読み込む
 loader.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.57.0/min/vs" } });

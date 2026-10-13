@@ -1,9 +1,8 @@
 import { DIFFICULTIES, type Difficulty } from "@/lib/problem";
+import type { DifficultyFilter } from "@/lib/problem-picker";
 import type { Theme } from "@/lib/theme";
 import { ArrowRightIcon, ChevronDownIcon, LogoMark, MoonIcon, SunIcon } from "./icons";
 import { Button } from "./ui";
-
-export type DifficultyFilter = Difficulty | "all";
 
 const chip = "inline-flex h-7 items-center gap-2 rounded-full border border-chip px-3 text-xs text-muted";
 

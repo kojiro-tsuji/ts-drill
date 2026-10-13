@@ -4,49 +4,20 @@
 // 幅 1024px 未満では縦に積み、境目は表示しない。
 
 import { useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import {
+  DEFAULT_PANE_SIZES,
+  loadPaneSizes,
+  moveHandle,
+  savePaneSizes,
+  type PaneSizes,
+} from "@/lib/pane-sizes";
 
-const STORAGE_KEY = "tsdrill:pane-sizes";
-// 参考デザインの flex-grow（1 : 1.3 : 1）に合わせた初期比率
-const DEFAULT_SIZES: [number, number, number] = [1 / 3.3, 1.3 / 3.3, 1 / 3.3];
 const MIN_PANE_PX = 260;
 const HANDLE_PX = 12;
 const KEY_STEP = 0.02;
 
-type Sizes = [number, number, number];
-
-function loadSizes(): Sizes {
-  try {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "null");
-    if (Array.isArray(saved) && saved.length === 3 && saved.every((v) => typeof v === "number" && v > 0)) {
-      const total = saved[0] + saved[1] + saved[2];
-      return [saved[0] / total, saved[1] / total, saved[2] / total];
-    }
-  } catch {
-    // 読めなければ初期比率を使う
-  }
-  return DEFAULT_SIZES;
-}
-
-function saveSizes(sizes: Sizes): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(sizes));
-  } catch {
-    // 保存できなくても調整自体は効く
-  }
-}
-
-// 境目 handle（0 = 左、1 = 右）の左右の 2 パネルだけで比率を分け直す
-function moveHandle(sizes: Sizes, handle: 0 | 1, leftShare: number, minShare: number): Sizes {
-  const next: Sizes = [...sizes];
-  const pair = sizes[handle] + sizes[handle + 1];
-  const left = Math.min(Math.max(leftShare, minShare), pair - minShare);
-  next[handle] = left;
-  next[handle + 1] = pair - left;
-  return next;
-}
-
 export function ResizableColumns({ children }: { children: [ReactNode, ReactNode, ReactNode] }) {
-  const [sizes, setSizes] = useState<Sizes>(loadSizes);
+  const [sizes, setSizes] = useState<PaneSizes>(loadPaneSizes);
   const [dragging, setDragging] = useState<0 | 1 | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -57,9 +28,9 @@ export function ResizableColumns({ children }: { children: [ReactNode, ReactNode
     return { available, minShare: Math.min(MIN_PANE_PX / available, 1 / 3) };
   };
 
-  const update = (next: Sizes) => {
+  const update = (next: PaneSizes) => {
     setSizes(next);
-    saveSizes(next);
+    savePaneSizes(next);
   };
 
   const onPointerDown = (handle: 0 | 1) => (e: PointerEvent<HTMLDivElement>) => {
@@ -81,7 +52,7 @@ export function ResizableColumns({ children }: { children: [ReactNode, ReactNode
   const onPointerUp = (e: PointerEvent<HTMLDivElement>) => {
     e.currentTarget.releasePointerCapture(e.pointerId);
     setDragging(null);
-    saveSizes(sizes);
+    savePaneSizes(sizes);
   };
 
   const onKeyDown = (handle: 0 | 1) => (e: KeyboardEvent<HTMLDivElement>) => {
@@ -104,7 +75,7 @@ export function ResizableColumns({ children }: { children: [ReactNode, ReactNode
       onPointerDown={onPointerDown(index)}
       onPointerMove={onPointerMove(index)}
       onPointerUp={onPointerUp}
-      onDoubleClick={() => update(DEFAULT_SIZES)}
+      onDoubleClick={() => update(DEFAULT_PANE_SIZES)}
       onKeyDown={onKeyDown(index)}
       className="group hidden cursor-col-resize touch-none items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-accent-ink lg:flex"
     >

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
+import { jetbrainsMono, zenKaku } from "@/lib/fonts";
 import { THEME_STORAGE_KEY } from "@/lib/theme";
-import { jetbrainsMono, zenKaku } from "./fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {

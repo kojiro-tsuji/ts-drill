@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { THEME_STORAGE_KEY, type Theme } from "@/lib/theme";
+import { THEME_STORAGE_KEY, type Theme } from "./theme";
 
 // 初期値は layout の描画前スクリプトが <html data-theme> に入れた値を読む
 function currentTheme(): Theme {
