@@ -2,11 +2,12 @@
 
 import { loader, type Monaco } from "@monaco-editor/react";
 import type { languages } from "monaco-editor";
+import type { Theme } from "@/lib/theme";
 
 // 型定義（node_modules の monaco-editor）と同じ版を CDN から読み込む
 loader.config({ paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.57.0/min/vs" } });
 
-export const THEME = "tsdrill";
+export const MONACO_THEMES: Record<Theme, string> = { dark: "tsdrill-dark", light: "tsdrill-light" };
 
 // 問題のコードが使う Node の API だけを型として宣言する（実体は Worker 内の模擬）
 const nodeTypes = `
@@ -129,7 +130,7 @@ export function setupMonaco(monaco: Monaco): void {
 
   monaco.languages.setMonarchTokensProvider("typescript", tsLanguage);
 
-  monaco.editor.defineTheme(THEME, {
+  monaco.editor.defineTheme(MONACO_THEMES.dark, {
     base: "vs-dark",
     inherit: true,
     rules: [
@@ -164,6 +165,45 @@ export function setupMonaco(monaco: Monaco): void {
       "scrollbarSlider.background": "#2A303B80",
       "scrollbarSlider.hoverBackground": "#3A4250",
       "scrollbarSlider.activeBackground": "#3A4250",
+    },
+  });
+
+  // ライト用。白い背景でも読めるよう、各色をダークより濃くしている
+  monaco.editor.defineTheme(MONACO_THEMES.light, {
+    base: "vs",
+    inherit: true,
+    rules: [
+      { token: "", foreground: "161A21" },
+      { token: "identifier", foreground: "161A21" },
+      { token: "keyword", foreground: "8A3FD1" },
+      { token: "string", foreground: "2E7D1A" },
+      { token: "number", foreground: "B25A00" },
+      { token: "type", foreground: "0B76AD" },
+      { token: "function", foreground: "2F5BC9" },
+      { token: "comment", foreground: "6B7585", fontStyle: "italic" },
+      { token: "builtin", foreground: "C2185B" },
+      { token: "operator", foreground: "5A6372" },
+      { token: "delimiter", foreground: "5A6372" },
+    ],
+    colors: {
+      "editor.background": "#F7F8FA",
+      "editor.foreground": "#161A21",
+      "editorGutter.background": "#F7F8FA",
+      "editorLineNumber.foreground": "#8C95A3",
+      "editorLineNumber.activeForeground": "#161A21",
+      "editor.lineHighlightBackground": "#0000000A",
+      "editor.lineHighlightBorder": "#00000000",
+      "editorCursor.foreground": "#4A7300",
+      "editor.selectionBackground": "#C9D9F2",
+      "editorBracketMatch.background": "#C4F44D66",
+      "editorBracketMatch.border": "#4A7300",
+      "editorIndentGuide.background1": "#E1E4E9",
+      "editorIndentGuide.activeBackground1": "#C5CBD4",
+      "editorWidget.background": "#FFFFFF",
+      "editorWidget.border": "#D3D8DF",
+      "scrollbarSlider.background": "#C5CBD480",
+      "scrollbarSlider.hoverBackground": "#AEB5C0",
+      "scrollbarSlider.activeBackground": "#AEB5C0",
     },
   });
 }

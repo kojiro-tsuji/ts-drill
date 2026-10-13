@@ -1,4 +1,5 @@
 import type { Problem } from "@/lib/problem";
+import type { Theme } from "@/lib/theme";
 import { CodeViewer } from "./code-editor";
 import { LockIcon } from "./icons";
 import { Button, Panel, PanelHeader, PanelLabel, Pill, SectionTitle } from "./ui";
@@ -8,11 +9,12 @@ type Props = {
   shown: boolean;
   onShow: () => void;
   onHide: () => void;
+  theme: Theme;
 };
 
-export function SolutionPanel({ problem, shown, onShow, onHide }: Props) {
+export function SolutionPanel({ problem, shown, onShow, onHide, theme }: Props) {
   return (
-    <Panel className="flex-[1_1_360px] max-sm:h-auto">
+    <Panel className="max-lg:min-h-[360px]">
       <PanelHeader>
         <PanelLabel>模範解答</PanelLabel>
         <Pill>{shown ? "表示中" : "非表示"}</Pill>
@@ -21,7 +23,7 @@ export function SolutionPanel({ problem, shown, onShow, onHide }: Props) {
       {shown ? (
         <div className="flex min-h-0 flex-1 flex-col gap-5 overflow-auto px-[18px] pt-[18px] pb-6">
           <div className="overflow-hidden rounded-[10px] border border-line bg-code">
-            <CodeViewer code={problem.solution.code} />
+            <CodeViewer code={problem.solution.code} theme={theme} />
           </div>
 
           <div className="flex flex-col gap-3">
@@ -39,7 +41,7 @@ export function SolutionPanel({ problem, shown, onShow, onHide }: Props) {
         </div>
       ) : (
         <div className="flex flex-1 flex-col items-center justify-center gap-3.5 p-8 text-center">
-          <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full bg-btn-hover">
+          <div className="flex h-[60px] w-[60px] items-center justify-center rounded-full bg-btn-hover text-accent-ink">
             <LockIcon />
           </div>
           <div className="text-[17px] font-bold">模範解答は非表示です</div>

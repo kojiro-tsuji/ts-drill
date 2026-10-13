@@ -6,7 +6,9 @@ import { judge, warmUpCompiler } from "@/lib/runner/judge";
 import { EditorPanel, type RunState } from "./editor-panel";
 import { Header, type DifficultyFilter } from "./header";
 import { ProblemPanel } from "./problem-panel";
+import { ResizableColumns } from "./resizable-columns";
 import { SolutionPanel } from "./solution-panel";
+import { useTheme } from "./use-theme";
 
 function pickRandom(pool: Problem[], exclude?: Problem): Problem {
   const candidates = pool.filter((p) => p !== exclude);
@@ -25,6 +27,7 @@ export default function TsdrillApp({ problems }: { problems: Problem[] }) {
   const [run, setRun] = useState<RunState>({ kind: "idle" });
   const [hasRun, setHasRun] = useState(false);
   const [answerShown, setAnswerShown] = useState(false);
+  const [theme, toggleTheme] = useTheme();
   // 実行中に問題を切り替えたとき、古い結果で画面を上書きしないための番号
   const runId = useRef(0);
 
@@ -69,30 +72,37 @@ export default function TsdrillApp({ problems }: { problems: Problem[] }) {
   for (const p of problems) counts.set(p.difficulty, (counts.get(p.difficulty) ?? 0) + 1);
 
   return (
-    <div className="flex min-h-dvh flex-col bg-page text-text">
+    // 横並び（lg 以上）では画面の高さちょうどに収め、下に余白を残さない
+    <div className="flex min-h-dvh flex-col bg-page text-text lg:h-dvh lg:min-h-[640px]">
       <Header
         difficulty={difficulty}
         counts={counts}
         total={problems.length}
         onDifficultyChange={changeDifficulty}
         onNext={nextProblem}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
-      <main className="flex flex-1 flex-wrap gap-3 p-3">
-        <ProblemPanel problem={problem} />
-        <EditorPanel
-          problem={problem}
-          code={code}
-          onCodeChange={setCode}
-          run={run}
-          hasRun={hasRun}
-          onRun={execute}
-        />
-        <SolutionPanel
-          problem={problem}
-          shown={answerShown}
-          onShow={() => setAnswerShown(true)}
-          onHide={() => setAnswerShown(false)}
-        />
+      <main className="flex min-h-0 flex-1 flex-col p-3">
+        <ResizableColumns>
+          <ProblemPanel problem={problem} />
+          <EditorPanel
+            problem={problem}
+            code={code}
+            onCodeChange={setCode}
+            run={run}
+            hasRun={hasRun}
+            onRun={execute}
+            theme={theme}
+          />
+          <SolutionPanel
+            problem={problem}
+            shown={answerShown}
+            onShow={() => setAnswerShown(true)}
+            onHide={() => setAnswerShown(false)}
+            theme={theme}
+          />
+        </ResizableColumns>
       </main>
     </div>
   );

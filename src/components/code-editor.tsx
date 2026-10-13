@@ -5,7 +5,8 @@
 import Editor, { type OnMount } from "@monaco-editor/react";
 import type { editor } from "monaco-editor";
 import { jetbrainsMono } from "@/app/fonts";
-import { setupMonaco, THEME } from "./monaco-setup";
+import type { Theme } from "@/lib/theme";
+import { MONACO_THEMES, setupMonaco } from "./monaco-setup";
 
 const baseOptions: editor.IStandaloneEditorConstructionOptions = {
   fontFamily: jetbrainsMono.style.fontFamily,
@@ -33,16 +34,17 @@ const placeholder = <div className="h-full w-full bg-code" />;
 
 type CodeEditorProps = {
   value: string;
+  theme: Theme;
   onChange: (value: string) => void;
   onCursorChange: (line: number, column: number) => void;
 };
 
-export function CodeEditor({ value, onChange, onCursorChange }: CodeEditorProps) {
+export function CodeEditor({ value, theme, onChange, onCursorChange }: CodeEditorProps) {
   return (
     <Editor
       path="file:///solution.ts"
       language="typescript"
-      theme={THEME}
+      theme={MONACO_THEMES[theme]}
       value={value}
       onChange={(v) => onChange(v ?? "")}
       beforeMount={setupMonaco}
@@ -69,7 +71,7 @@ export function CodeEditor({ value, onChange, onCursorChange }: CodeEditorProps)
 const VIEWER_LINE_HEIGHT = 22;
 const VIEWER_PADDING = 12;
 
-export function CodeViewer({ code }: { code: string }) {
+export function CodeViewer({ code, theme }: { code: string; theme: Theme }) {
   // 末尾の改行で空の行が 1 つ増えないよう取り除く
   const trimmed = code.replace(/\n+$/, "");
   const lines = trimmed.split("\n").length;
@@ -77,7 +79,7 @@ export function CodeViewer({ code }: { code: string }) {
     <Editor
       path="file:///answer.ts"
       language="typescript"
-      theme={THEME}
+      theme={MONACO_THEMES[theme]}
       value={trimmed}
       height={lines * VIEWER_LINE_HEIGHT + VIEWER_PADDING * 2}
       beforeMount={setupMonaco}

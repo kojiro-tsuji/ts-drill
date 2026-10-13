@@ -5,7 +5,8 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 export function Panel({ className = "", children }: { className?: string; children: ReactNode }) {
   return (
     <section
-      className={`flex h-[820px] min-w-0 flex-col overflow-hidden rounded-[14px] border border-line bg-panel ${className}`}
+      // 横並び（lg 以上）では画面の高さいっぱいに伸ばす。縦積みの高さは className で指定する
+      className={`flex min-w-0 flex-col overflow-hidden rounded-[14px] border border-line bg-panel lg:h-full ${className}`}
     >
       {children}
     </section>
@@ -27,7 +28,7 @@ export function PanelLabel({ children }: { children: ReactNode }) {
 }
 
 export function SectionTitle({ className = "", children }: { className?: string; children: ReactNode }) {
-  return <h2 className={`m-0 text-sm font-bold text-accent ${className}`}>{children}</h2>;
+  return <h2 className={`m-0 text-sm font-bold text-accent-ink ${className}`}>{children}</h2>;
 }
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "secondary" };
@@ -40,7 +41,7 @@ export function Button({ variant = "secondary", className = "", ...props }: Butt
   return (
     <button
       type="button"
-      className={`inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-[10px] border px-[18px] text-sm font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-default disabled:opacity-60 ${look} ${className}`}
+      className={`inline-flex min-h-11 cursor-pointer items-center justify-center gap-2 rounded-[10px] border px-[18px] text-sm font-bold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink disabled:cursor-default disabled:opacity-60 ${look} ${className}`}
       {...props}
     />
   );
@@ -50,7 +51,7 @@ export type Tone = "idle" | "ok" | "error";
 
 const pillTone: Record<Tone, string> = {
   idle: "border-chip text-muted",
-  ok: "border-accent text-accent",
+  ok: "border-accent-ink text-accent-ink",
   error: "border-error text-error",
 };
 

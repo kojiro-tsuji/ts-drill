@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Problem } from "@/lib/problem";
 import { normalizeOutput } from "@/lib/runner/compare";
 import type { JudgeResult, SampleVerdict } from "@/lib/runner/judge";
+import type { Theme } from "@/lib/theme";
 import { CodeEditor } from "./code-editor";
 import { PlayIcon, TsFileIcon } from "./icons";
 import { Button, Panel, PanelHeader, PanelLabel, Pill, type Tone } from "./ui";
@@ -20,14 +21,15 @@ type Props = {
   run: RunState;
   hasRun: boolean;
   onRun: () => void;
+  theme: Theme;
 };
 
-export function EditorPanel({ problem, code, onCodeChange, run, hasRun, onRun }: Props) {
+export function EditorPanel({ problem, code, onCodeChange, run, hasRun, onRun, theme }: Props) {
   const [cursor, setCursor] = useState({ line: 1, column: 1 });
   const summary = summarize(run, problem.samples.length);
 
   return (
-    <Panel className="flex-[1.3_1_480px] max-sm:h-[680px]">
+    <Panel className="max-lg:h-[680px]">
       <PanelHeader className="pr-2.5">
         <div className="flex items-center gap-2.5 font-mono text-[13px]">
           <TsFileIcon />
@@ -42,6 +44,7 @@ export function EditorPanel({ problem, code, onCodeChange, run, hasRun, onRun }:
       <div className="min-h-0 flex-1 bg-code">
         <CodeEditor
           value={code}
+          theme={theme}
           onChange={onCodeChange}
           onCursorChange={(line, column) => setCursor({ line, column })}
         />
@@ -104,7 +107,7 @@ function ResultRow({ index, expected, verdict }: { index: number; expected: stri
     ? "bg-badge-idle text-muted"
     : verdict.status === "AC"
       ? "bg-accent text-on-accent"
-      : "bg-error text-on-accent";
+      : "bg-error text-on-error";
 
   const actual = verdict && verdict.status !== "TLE" ? normalizeOutput(verdict.actual) || "（なし）" : "—";
   const time = !verdict ? "—" : verdict.status === "TLE" ? `> ${verdict.timeLimitMs} ms` : formatTime(verdict.timeMs);

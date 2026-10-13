@@ -1,5 +1,6 @@
 import { DIFFICULTIES, type Difficulty } from "@/lib/problem";
-import { ArrowRightIcon, ChevronDownIcon, LogoMark } from "./icons";
+import type { Theme } from "@/lib/theme";
+import { ArrowRightIcon, ChevronDownIcon, LogoMark, MoonIcon, SunIcon } from "./icons";
 import { Button } from "./ui";
 
 export type DifficultyFilter = Difficulty | "all";
@@ -12,11 +13,14 @@ type Props = {
   total: number;
   onDifficultyChange: (filter: DifficultyFilter) => void;
   onNext: () => void;
+  theme: Theme;
+  onToggleTheme: () => void;
 };
 
-export function Header({ difficulty, counts, total, onDifficultyChange, onNext }: Props) {
+export function Header({ difficulty, counts, total, onDifficultyChange, onNext, theme, onToggleTheme }: Props) {
+  const nextThemeLabel = theme === "dark" ? "ライトモードに切り替え" : "ダークモードに切り替え";
   return (
-    <header className="flex min-h-[60px] flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-2">
+    <header className="flex min-h-[60px] flex-none flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-2">
       <div className="flex items-center gap-2.5">
         <LogoMark />
         <span className="font-mono text-[17px] font-bold tracking-[-0.01em]">tsdrill</span>
@@ -35,7 +39,7 @@ export function Header({ difficulty, counts, total, onDifficultyChange, onNext }
           <select
             value={difficulty}
             onChange={(e) => onDifficultyChange(e.target.value === "all" ? "all" : (Number(e.target.value) as Difficulty))}
-            className="min-h-11 cursor-pointer appearance-none rounded-[10px] border border-btn-line bg-transparent pr-10 pl-4 text-sm font-bold text-text hover:bg-btn-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="min-h-11 cursor-pointer appearance-none rounded-[10px] border border-btn-line bg-transparent pr-10 pl-4 text-sm font-bold text-text hover:bg-btn-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-ink"
           >
             <option value="all" className="bg-panel">
               難易度: すべて（{total}）
@@ -53,6 +57,9 @@ export function Header({ difficulty, counts, total, onDifficultyChange, onNext }
         <Button onClick={onNext}>
           <span>次の問題へ</span>
           <ArrowRightIcon />
+        </Button>
+        <Button onClick={onToggleTheme} aria-label={nextThemeLabel} title={nextThemeLabel} className="w-11 px-0!">
+          {theme === "dark" ? <SunIcon /> : <MoonIcon />}
         </Button>
       </div>
     </header>

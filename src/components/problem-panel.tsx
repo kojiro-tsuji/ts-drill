@@ -3,7 +3,7 @@ import { CodeBox, Panel, PanelHeader, PanelLabel, SectionTitle } from "./ui";
 
 export function ProblemPanel({ problem }: { problem: Problem }) {
   return (
-    <Panel className="flex-[1_1_380px] max-sm:h-auto">
+    <Panel>
       <PanelHeader>
         <PanelLabel>問題</PanelLabel>
         <span className="text-xs text-muted">
