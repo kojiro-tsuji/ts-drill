@@ -27,7 +27,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"kitten\"\n//   input[1] は \"sitting\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst [s, t] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = s.length;\nconst m = t.length;\n\n// dp[i][j] = S の先頭 i 文字を T の先頭 j 文字にする最小回数。2 行だけ持つ\nlet prev = new Int32Array(m + 1);\nlet cur = new Int32Array(m + 1);\nfor (let j = 0; j <= m; j++) prev[j] = j; // 空文字列から j 文字を挿入\nfor (let i = 1; i <= n; i++) {\n  cur[0] = i; // i 文字を削除して空文字列に\n  for (let j = 1; j <= m; j++) {\n    const replace = prev[j - 1] + (s[i - 1] === t[j - 1] ? 0 : 1);\n    cur[j] = Math.min(replace, prev[j] + 1, cur[j - 1] + 1);\n  }\n  [prev, cur] = [cur, prev];\n}\nconsole.log(prev[m]);\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst [s, t] = input;\nconst n = s.length;\nconst m = t.length;\n\n// dp[i][j] = S の先頭 i 文字を T の先頭 j 文字にする最小回数。2 行だけ持つ\nlet prev = new Int32Array(m + 1);\nlet cur = new Int32Array(m + 1);\nfor (let j = 0; j <= m; j++) prev[j] = j; // 空文字列から j 文字を挿入\nfor (let i = 1; i <= n; i++) {\n  cur[0] = i; // i 文字を削除して空文字列に\n  for (let j = 1; j <= m; j++) {\n    const replace = prev[j - 1] + (s[i - 1] === t[j - 1] ? 0 : 1);\n    cur[j] = Math.min(replace, prev[j] + 1, cur[j - 1] + 1);\n  }\n  [prev, cur] = [cur, prev];\n}\nconsole.log(prev[m]);\n",
     "explanation": [
       {
         "lead": "末尾の操作で場合分けする。",

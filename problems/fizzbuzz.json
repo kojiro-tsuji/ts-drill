@@ -27,7 +27,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"5\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst n = Number(readFileSync(0, \"utf8\").trim());\n\nconst out: string[] = [];\nfor (let i = 1; i <= n; i++) {\n  // 15 の倍数を先に判定する\n  if (i % 15 === 0) out.push(\"FizzBuzz\");\n  else if (i % 3 === 0) out.push(\"Fizz\");\n  else if (i % 5 === 0) out.push(\"Buzz\");\n  else out.push(String(i));\n}\nconsole.log(out.join(\"\\n\"));\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst n = Number(input[0]);\n\nconst out: string[] = [];\nfor (let i = 1; i <= n; i++) {\n  // 15 の倍数を先に判定する\n  if (i % 15 === 0) out.push(\"FizzBuzz\");\n  else if (i % 3 === 0) out.push(\"Fizz\");\n  else if (i % 5 === 0) out.push(\"Buzz\");\n  else out.push(String(i));\n}\nconsole.log(out.join(\"\\n\"));\n",
     "explanation": [
       {
         "lead": "15 の倍数を最初に調べる。",

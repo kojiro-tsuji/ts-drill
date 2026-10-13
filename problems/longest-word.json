@@ -28,7 +28,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"4\"\n//   input[1] は \"the quick brown fox\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst words = second.split(\" \");\n\nlet best = words[0];\nfor (const w of words) {\n  // 「より長い」ときだけ更新すれば、同じ長さでは最初のものが残る\n  if (w.length > best.length) best = w;\n}\nconsole.log(best);\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst [, second] = input;\nconst words = second.split(\" \");\n\nlet best = words[0];\nfor (const w of words) {\n  // 「より長い」ときだけ更新すれば、同じ長さでは最初のものが残る\n  if (w.length > best.length) best = w;\n}\nconsole.log(best);\n",
     "explanation": [
       {
         "lead": "暫定の答えを持ちながら比べる。",

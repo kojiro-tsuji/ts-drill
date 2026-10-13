@@ -27,7 +27,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"listen\"\n//   input[1] は \"silent\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst [s, t] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 各文字の出現回数を数え、S で足して T で引く\nfunction same(x: string, y: string): boolean {\n  if (x.length !== y.length) return false;\n  const count = new Array(26).fill(0);\n  for (const c of x) count[c.charCodeAt(0) - 97]++;\n  for (const c of y) count[c.charCodeAt(0) - 97]--;\n  return count.every((v) => v === 0);\n}\nconsole.log(same(s, t) ? \"Yes\" : \"No\");\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst [s, t] = input;\n\n// 各文字の出現回数を数え、S で足して T で引く\nfunction same(x: string, y: string): boolean {\n  if (x.length !== y.length) return false;\n  const count = new Array(26).fill(0);\n  for (const c of x) count[c.charCodeAt(0) - 97]++;\n  for (const c of y) count[c.charCodeAt(0) - 97]--;\n  return count.every((v) => v === 0);\n}\nconsole.log(same(s, t) ? \"Yes\" : \"No\");\n",
     "explanation": [
       {
         "lead": "文字ごとの個数が一致すればよい。",

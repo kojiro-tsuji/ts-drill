@@ -29,7 +29,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"5 2\"\n//   input[1] は \"1 2 3 4 5\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst [first, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst [nStr, kStr] = first.split(\" \");\nconst n = Number(nStr);\nconst a = second.split(\" \");\n\n// N 回で元に戻るので K mod N 回だけ回す。K は大きいので BigInt で余りを取る\nconst k = Number(BigInt(kStr) % BigInt(n));\nconst rotated = [...a.slice(n - k), ...a.slice(0, n - k)];\nconsole.log(rotated.join(\" \"));\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst [first, second] = input;\nconst [nStr, kStr] = first.split(\" \");\nconst n = Number(nStr);\nconst a = second.split(\" \");\n\n// N 回で元に戻るので K mod N 回だけ回す。K は大きいので BigInt で余りを取る\nconst k = Number(BigInt(kStr) % BigInt(n));\nconst rotated = [...a.slice(n - k), ...a.slice(0, n - k)];\nconsole.log(rotated.join(\" \"));\n",
     "explanation": [
       {
         "lead": "N 回回すと元に戻る。",

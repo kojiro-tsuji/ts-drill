@@ -27,7 +27,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"babad\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\nconst n = s.length;\n\n// 中心から左右に広げられるだけ広げ、その回文の長さを返す\nfunction expand(left: number, right: number): number {\n  while (left >= 0 && right < n && s[left] === s[right]) {\n    left--;\n    right++;\n  }\n  return right - left - 1;\n}\n\nlet best = 1;\nfor (let c = 0; c < n; c++) {\n  best = Math.max(best, expand(c, c)); // 長さが奇数の回文（中心が 1 文字）\n  best = Math.max(best, expand(c, c + 1)); // 長さが偶数の回文（中心が文字の間）\n}\nconsole.log(best);\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst s = input[0];\nconst n = s.length;\n\n// 中心から左右に広げられるだけ広げ、その回文の長さを返す\nfunction expand(left: number, right: number): number {\n  while (left >= 0 && right < n && s[left] === s[right]) {\n    left--;\n    right++;\n  }\n  return right - left - 1;\n}\n\nlet best = 1;\nfor (let c = 0; c < n; c++) {\n  best = Math.max(best, expand(c, c)); // 長さが奇数の回文（中心が 1 文字）\n  best = Math.max(best, expand(c, c + 1)); // 長さが偶数の回文（中心が文字の間）\n}\nconsole.log(best);\n",
     "explanation": [
       {
         "lead": "回文の中心を決めて左右に広げる。",

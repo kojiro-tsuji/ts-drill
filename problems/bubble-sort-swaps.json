@@ -28,7 +28,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"4\"\n//   input[1] は \"3 1 4 2\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\nconst n = a.length;\n\n// 交換回数は「i < j かつ Ai > Aj となる組」の個数（転倒数）に等しい\nlet swaps = 0;\nfor (let i = 0; i < n; i++) {\n  for (let j = i + 1; j < n; j++) {\n    if (a[i] > a[j]) swaps++;\n  }\n}\nconsole.log(swaps);\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst [, second] = input;\nconst a = second.split(\" \").map(Number);\nconst n = a.length;\n\n// 交換回数は「i < j かつ Ai > Aj となる組」の個数（転倒数）に等しい\nlet swaps = 0;\nfor (let i = 0; i < n; i++) {\n  for (let j = i + 1; j < n; j++) {\n    if (a[i] > a[j]) swaps++;\n  }\n}\nconsole.log(swaps);\n",
     "explanation": [
       {
         "lead": "1 回の交換で、逆順の組が 1 つ減る。",

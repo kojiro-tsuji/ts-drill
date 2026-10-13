@@ -9,7 +9,7 @@ import { executeJs } from "../src/lib/runner/execute";
 import { normalizeOutput, outputsMatch } from "../src/lib/runner/compare";
 import { transpile } from "../src/lib/runner/transpile";
 import { DIFFICULTIES, type Problem } from "../src/lib/problem";
-import { buildStarterCode } from "../src/lib/starter-code";
+import { buildStarterCode, SOLUTION_HEADER } from "../src/lib/starter-code";
 
 const dir = join(import.meta.dirname, "..", "problems");
 const args = process.argv.slice(2);
@@ -36,7 +36,13 @@ function checkShape(p: Problem, file: string): string[] {
   } else if (!transpile(p.starterCode).ok) {
     errors.push("starterCode に構文エラーがある");
   }
-  if (!nonEmpty(p.solution?.code)) errors.push("solution.code が空");
+  if (!nonEmpty(p.solution?.code)) {
+    errors.push("solution.code が空");
+  } else {
+    // 模範解答は雛形と同じ読み方で始め、入力は 1 回だけ読む（本物の Node では 2 回目は空になる）
+    if (!p.solution.code.startsWith(SOLUTION_HEADER)) errors.push("模範解答の先頭が雛形と同じ入力の読み方になっていない");
+    if (p.solution.code.split("readFileSync").length - 1 !== 1) errors.push("模範解答が readFileSync を 2 回以上呼んでいる");
+  }
   if (!Array.isArray(p.solution?.explanation) || p.solution.explanation.length === 0) {
     errors.push("solution.explanation が空");
   } else if (p.solution.explanation.some((e) => !nonEmpty(e.lead) || !nonEmpty(e.body))) {

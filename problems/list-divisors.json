@@ -27,7 +27,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"12\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst n = Number(readFileSync(0, \"utf8\").trim());\n\nconst small: number[] = [];\nconst large: number[] = [];\nfor (let d = 1; d * d <= n; d++) {\n  if (n % d !== 0) continue;\n  small.push(d);\n  // 対になる約数（平方数のときは同じ値を 2 回入れない）\n  if (d !== n / d) large.push(n / d);\n}\nconsole.log([...small, ...large.reverse()].join(\" \"));\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst n = Number(input[0]);\n\nconst small: number[] = [];\nconst large: number[] = [];\nfor (let d = 1; d * d <= n; d++) {\n  if (n % d !== 0) continue;\n  small.push(d);\n  // 対になる約数（平方数のときは同じ値を 2 回入れない）\n  if (d !== n / d) large.push(n / d);\n}\nconsole.log([...small, ...large.reverse()].join(\" \"));\n",
     "explanation": [
       {
         "lead": "約数は d と N/d の組で見つかる。",

@@ -28,7 +28,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"3\"\n//   input[1] は \"0 5\"\n//   input[2] は \"2 7\"\n//   input[3] は \"4 6\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = Number(lines[0]);\n\n// いもす法: 入った時刻に +1、出た時刻に -1 を記録し、最後に累積する\nconst diff = new Int32Array(1_000_001);\nfor (let i = 1; i <= n; i++) {\n  const [s, t] = lines[i].split(\" \").map(Number);\n  diff[s]++;\n  diff[t]--;\n}\nlet cur = 0;\nlet best = 0;\nfor (let t = 0; t < diff.length; t++) {\n  cur += diff[t];\n  if (cur > best) best = cur;\n}\nconsole.log(best);\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst n = Number(input[0]);\n\n// いもす法: 入った時刻に +1、出た時刻に -1 を記録し、最後に累積する\nconst diff = new Int32Array(1_000_001);\nfor (let i = 1; i <= n; i++) {\n  const [s, t] = input[i].split(\" \").map(Number);\n  diff[s]++;\n  diff[t]--;\n}\nlet cur = 0;\nlet best = 0;\nfor (let t = 0; t < diff.length; t++) {\n  cur += diff[t];\n  if (cur > best) best = cur;\n}\nconsole.log(best);\n",
     "explanation": [
       {
         "lead": "区間の始まりと終わりだけを記録する（いもす法）。",

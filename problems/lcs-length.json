@@ -27,7 +27,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"abcde\"\n//   input[1] は \"ace\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst [s, t] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst n = s.length;\nconst m = t.length;\n\n// dp[i][j] = S の先頭 i 文字と T の先頭 j 文字の LCS の長さ。2 行だけ持つ\nlet prev = new Int32Array(m + 1);\nlet cur = new Int32Array(m + 1);\nfor (let i = 1; i <= n; i++) {\n  for (let j = 1; j <= m; j++) {\n    if (s[i - 1] === t[j - 1]) cur[j] = prev[j - 1] + 1;\n    else cur[j] = Math.max(prev[j], cur[j - 1]);\n  }\n  [prev, cur] = [cur, prev];\n}\nconsole.log(prev[m]);\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst [s, t] = input;\nconst n = s.length;\nconst m = t.length;\n\n// dp[i][j] = S の先頭 i 文字と T の先頭 j 文字の LCS の長さ。2 行だけ持つ\nlet prev = new Int32Array(m + 1);\nlet cur = new Int32Array(m + 1);\nfor (let i = 1; i <= n; i++) {\n  for (let j = 1; j <= m; j++) {\n    if (s[i - 1] === t[j - 1]) cur[j] = prev[j - 1] + 1;\n    else cur[j] = Math.max(prev[j], cur[j - 1]);\n  }\n  [prev, cur] = [cur, prev];\n}\nconsole.log(prev[m]);\n",
     "explanation": [
       {
         "lead": "先頭からの長さを状態にする。",

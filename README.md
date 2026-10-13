@@ -40,6 +40,8 @@ const input: string[] = fs.readFileSync(0, "utf8").trim().split("\n");
 
 雛形は `src/lib/starter-code.ts` が入力例 1 から作り、`npm run verify -- --write` で各問題の JSON に書き込む。
 
+模範解答も同じ 2 行（`import` と `const input = …`）で始まり、以降は `input` から値を取り出す。雛形の「ここに解答を書く」の続きとして読める形にそろえている。
+
 ブラウザ内の実行環境で使える Node.js の機能は次だけ。
 
 - `fs.readFileSync(0)`（または `"/dev/stdin"`）… 標準入力の文字列を返す

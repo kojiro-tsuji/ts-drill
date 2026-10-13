@@ -2,6 +2,13 @@
 // その問題の入力例 1 で input に何が入るかをコメントで示す。
 // problems/*.json の starterCode は、verify スクリプトがこの関数で書き込む。
 
+// 入力を読む 2 行。雛形も模範解答もこの形で読み、以降は input から値を取り出す
+export const IMPORT_LINE = 'import * as fs from "fs";';
+export const READ_INPUT_LINE = 'const input: string[] = fs.readFileSync(0, "utf8").trim().split("\\n");';
+
+// 模範解答の先頭はこの形にそろえる（雛形の「ここに解答を書く」の続きとして読めるように）
+export const SOLUTION_HEADER = `${IMPORT_LINE}\n\n${READ_INPUT_LINE}\n`;
+
 const MAX_LINES = 4;
 const MAX_LINE_CHARS = 40;
 
@@ -23,11 +30,11 @@ function describeInput(sampleInput: string): string[] {
 
 export function buildStarterCode(sampleInput: string): string {
   return [
-    'import * as fs from "fs";',
+    IMPORT_LINE,
     "",
     "// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、",
     "// 改行で区切って 1 行ずつの配列にする",
-    'const input: string[] = fs.readFileSync(0, "utf8").trim().split("\\n");',
+    READ_INPUT_LINE,
     "",
     "// 入力例 1 のとき:",
     ...describeInput(sampleInput),

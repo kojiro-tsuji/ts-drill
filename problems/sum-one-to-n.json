@@ -27,7 +27,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"10\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\n// 答えは最大で約 5 × 10¹⁷ になるので BigInt で計算する\nconst n = BigInt(readFileSync(0, \"utf8\").trim());\nconsole.log(((n * (n + 1n)) / 2n).toString());\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 答えは最大で約 5 × 10¹⁷ になるので BigInt で計算する\nconst n = BigInt(input[0]);\nconsole.log(((n * (n + 1n)) / 2n).toString());\n",
     "explanation": [
       {
         "lead": "和の公式 N(N+1)/2 を使う。",

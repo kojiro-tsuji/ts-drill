@@ -28,7 +28,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"3 3\"\n//   input[1] は \"1 6 11\"\n//   input[2] は \"4 9 20\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst lines = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = lines[1].split(\" \").map(Number).sort((x, y) => x - y);\nconst b = lines[2].split(\" \").map(Number).sort((x, y) => x - y);\n\n// 両方を昇順にして、小さいほうを進める\nlet i = 0;\nlet j = 0;\nlet best = Infinity;\nwhile (i < a.length && j < b.length) {\n  best = Math.min(best, Math.abs(a[i] - b[j]));\n  if (a[i] < b[j]) i++;\n  else j++;\n}\nconsole.log(best);\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst a = input[1].split(\" \").map(Number).sort((x, y) => x - y);\nconst b = input[2].split(\" \").map(Number).sort((x, y) => x - y);\n\n// 両方を昇順にして、小さいほうを進める\nlet i = 0;\nlet j = 0;\nlet best = Infinity;\nwhile (i < a.length && j < b.length) {\n  best = Math.min(best, Math.abs(a[i] - b[j]));\n  if (a[i] < b[j]) i++;\n  else j++;\n}\nconsole.log(best);\n",
     "explanation": [
       {
         "lead": "両方の列を並べ替える。",

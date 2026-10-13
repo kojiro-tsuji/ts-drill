@@ -27,7 +27,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"7\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst n = Number(readFileSync(0, \"utf8\").trim());\n\nfunction isPrime(x: number): boolean {\n  if (x < 2) return false;\n  // 約数があれば √x 以下に必ず 1 つある\n  for (let d = 2; d * d <= x; d++) {\n    if (x % d === 0) return false;\n  }\n  return true;\n}\nconsole.log(isPrime(n) ? \"Yes\" : \"No\");\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst n = Number(input[0]);\n\nfunction isPrime(x: number): boolean {\n  if (x < 2) return false;\n  // 約数があれば √x 以下に必ず 1 つある\n  for (let d = 2; d * d <= x; d++) {\n    if (x % d === 0) return false;\n  }\n  return true;\n}\nconsole.log(isPrime(n) ? \"Yes\" : \"No\");\n",
     "explanation": [
       {
         "lead": "√N まで割ってみれば足りる。",

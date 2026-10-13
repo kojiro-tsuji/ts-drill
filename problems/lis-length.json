@@ -28,7 +28,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"6\"\n//   input[1] は \"3 1 4 1 5 9\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\n// tails[k] = 長さ k+1 の増加部分列の末尾として考えられる最小値\nconst tails: number[] = [];\nfor (const x of a) {\n  // x 以上の最初の位置を二分探索する\n  let lo = 0;\n  let hi = tails.length;\n  while (lo < hi) {\n    const mid = (lo + hi) >> 1;\n    if (tails[mid] < x) lo = mid + 1;\n    else hi = mid;\n  }\n  tails[lo] = x; // lo === tails.length なら末尾に追加される\n}\nconsole.log(tails.length);\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst [, second] = input;\nconst a = second.split(\" \").map(Number);\n\n// tails[k] = 長さ k+1 の増加部分列の末尾として考えられる最小値\nconst tails: number[] = [];\nfor (const x of a) {\n  // x 以上の最初の位置を二分探索する\n  let lo = 0;\n  let hi = tails.length;\n  while (lo < hi) {\n    const mid = (lo + hi) >> 1;\n    if (tails[mid] < x) lo = mid + 1;\n    else hi = mid;\n  }\n  tails[lo] = x; // lo === tails.length なら末尾に追加される\n}\nconsole.log(tails.length);\n",
     "explanation": [
       {
         "lead": "長さごとに「末尾の最小値」を持つ。",

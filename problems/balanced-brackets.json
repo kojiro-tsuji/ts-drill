@@ -27,7 +27,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"{[()()]}\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst s = readFileSync(0, \"utf8\").trim();\nconst pair: Record<string, string> = { \")\": \"(\", \"]\": \"[\", \"}\": \"{\" };\n\n// まだ閉じていない開き括弧をスタックに積む\nconst stack: string[] = [];\nlet ok = true;\nfor (const c of s) {\n  if (c === \"(\" || c === \"[\" || c === \"{\") {\n    stack.push(c);\n  } else if (stack.pop() !== pair[c]) {\n    ok = false; // 対応する開き括弧がない、または種類が違う\n    break;\n  }\n}\nconsole.log(ok && stack.length === 0 ? \"Yes\" : \"No\");\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst s = input[0];\nconst pair: Record<string, string> = { \")\": \"(\", \"]\": \"[\", \"}\": \"{\" };\n\n// まだ閉じていない開き括弧をスタックに積む\nconst stack: string[] = [];\nlet ok = true;\nfor (const c of s) {\n  if (c === \"(\" || c === \"[\" || c === \"{\") {\n    stack.push(c);\n  } else if (stack.pop() !== pair[c]) {\n    ok = false; // 対応する開き括弧がない、または種類が違う\n    break;\n  }\n}\nconsole.log(ok && stack.length === 0 ? \"Yes\" : \"No\");\n",
     "explanation": [
       {
         "lead": "スタックで最新の開き括弧を管理する。",

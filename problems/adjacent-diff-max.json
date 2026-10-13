@@ -28,7 +28,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"5\"\n//   input[1] は \"3 1 4 1 5\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\n// 1 行目の N は使わない\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst a = second.split(\" \").map(Number);\n\n// 隣り合う差の絶対値を配列にする\nconst diffs = a.slice(1).map((v, i) => Math.abs(v - a[i]));\n\n// 最大値を 1 回の走査で求める\nconst answer = diffs.reduce((max, d) => Math.max(max, d), 0);\nconsole.log(answer);\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 1 行目の N は使わない\nconst [, second] = input;\nconst a = second.split(\" \").map(Number);\n\n// 隣り合う差の絶対値を配列にする\nconst diffs = a.slice(1).map((v, i) => Math.abs(v - a[i]));\n\n// 最大値を 1 回の走査で求める\nconst answer = diffs.reduce((max, d) => Math.max(max, d), 0);\nconsole.log(answer);\n",
     "explanation": [
       {
         "lead": "隣り合う差を配列にする。",

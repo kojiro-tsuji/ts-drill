@@ -28,7 +28,7 @@
   "hiddenTests": [],
   "starterCode": "import * as fs from \"fs\";\n\n// 標準入力（左の「入力例」の内容）を 1 つの文字列として受け取り、\n// 改行で区切って 1 行ずつの配列にする\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n// 入力例 1 のとき:\n//   input[0] は \"6\"\n//   input[1] は \"7 1 5 3 6 4\"\n\n// 答えは console.log で出力する\n// ここに解答を書く\n",
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n\nconst [, second] = readFileSync(0, \"utf8\").trim().split(\"\\n\");\nconst p = second.split(\" \").map(Number);\n\n// その日より前の最安値で買ったと考える\nlet minPrice = p[0];\nlet best = 0;\nfor (let j = 1; j < p.length; j++) {\n  best = Math.max(best, p[j] - minPrice);\n  minPrice = Math.min(minPrice, p[j]);\n}\nconsole.log(best);\n",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\nconst [, second] = input;\nconst p = second.split(\" \").map(Number);\n\n// その日より前の最安値で買ったと考える\nlet minPrice = p[0];\nlet best = 0;\nfor (let j = 1; j < p.length; j++) {\n  best = Math.max(best, p[j] - minPrice);\n  minPrice = Math.min(minPrice, p[j]);\n}\nconsole.log(best);\n",
     "explanation": [
       {
         "lead": "売る日を固定して考える。",

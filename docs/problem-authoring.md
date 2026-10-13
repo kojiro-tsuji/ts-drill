@@ -26,7 +26,7 @@
   "hiddenTests": [],
   "starterCode": "",                  // 空のままでよい。--write が入力例 1 から作る（src/lib/starter-code.ts）
   "solution": {
-    "code": "import { readFileSync } from \"fs\";\n…",
+    "code": "import * as fs from \"fs\";\n\nconst input: string[] = fs.readFileSync(0, \"utf8\").trim().split(\"\\n\");\n\n…",
     "explanation": [{ "lead": "要点。", "body": "本文。" }]  // 2〜4 個
   }
 }
@@ -46,7 +46,8 @@
 
 - 文体は常体。問題文は「〜せよ。」で終える。
 - 数式の添字は `A1`, `A(i+1)` のように書く。上付きは `10⁵` `10⁹` を使う。
-- 入力はすべて標準入力から読む（`readFileSync(0, "utf8")`）。使える Node API は `fs.readFileSync` と `console.log`、`process.stdout.write` だけ。
+- 入力はすべて標準入力から読む。使える Node API は `fs.readFileSync` と `console.log`、`process.stdout.write` だけ。
+- 模範解答は雛形と同じ 2 行（`import * as fs from "fs";` と `const input: string[] = fs.readFileSync(0, "utf8").trim().split("\n");`）で始め、以降は `input` から値を取り出す（例: `const n = Number(input[0]);`、`const a = input[1].split(" ").map(Number);`）。`readFileSync` は 1 回だけ呼ぶ（本物の Node.js では 2 回目は空になる）。`npm run verify` がこの形をチェックする。
 - 出力が複数行になる場合は、配列を `join("\n")` してまとめて出す（速い）。
 - 64 bit を超えうる値は `BigInt` を使い、制約にもそれが分かる範囲を書く。剰余は `998244353` か `1000000007`。
 - 模範解答は読みやすさ優先。短いコメントで要所を説明し、計算量が制約内に収まること。
