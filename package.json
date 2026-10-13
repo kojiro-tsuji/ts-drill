@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify": "tsx scripts/verify-problems.ts"
+    "verify": "tsx scripts/verify-problems.ts",
+    "preview": "next build && wrangler dev",
+    "deploy": "next build && wrangler deploy"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
@@ -25,6 +27,7 @@
     "eslint-config-next": "16.4.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wrangler": "^4.149.0"
   }
 }

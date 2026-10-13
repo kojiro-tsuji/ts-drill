@@ -1,0 +1,11 @@
+// Cloudflare Workers の設定。next build が書き出した out/ を静的ファイルとして配信するだけで、サーバー側のコードはない
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ts-drill",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./out",
+    // 存在しないパスには out/404.html を返す
+    "not_found_handling": "404-page"
+  }
+}
