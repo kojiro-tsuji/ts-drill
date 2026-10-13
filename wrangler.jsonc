@@ -7,5 +7,10 @@
     "directory": "./out",
     // 存在しないパスには out/404.html を返す
     "not_found_handling": "404-page"
+  },
+  // Workers Logs（実行ログ）は使わない。サーバー側で動くコードがなく、記録する内容がないため。
+  // ダッシュボードの設定と食い違わないよう、ここでも明示しておく
+  "observability": {
+    "enabled": false
   }
 }
